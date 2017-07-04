@@ -26,6 +26,7 @@ llvm: patch
 
 clean: unpatch
 	rm -rf llvm/build
+	rm -rf llvm/tools/clang
 
 distclean: clean
 	rm -rf ${INSTALL_DIR}
