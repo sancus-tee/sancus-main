@@ -1,0 +1,66 @@
+diff --git a/lib/CodeGen/CodeGenModule.cpp b/lib/CodeGen/CodeGenModule.cpp
+index 3600543..f41af54 100644
+--- a/lib/CodeGen/CodeGenModule.cpp
++++ b/lib/CodeGen/CodeGenModule.cpp
+@@ -1130,6 +1130,9 @@ void CodeGenModule::SetFunctionAttributes(GlobalDecl GD, llvm::Function *F,
+   // is handled with better precision by the receiving DSO.
+   if (!CodeGenOpts.SanitizeCfiCrossDso)
+     CreateFunctionTypeMetadata(FD, F);
++
++  if (FD->hasAttr<AnnotateAttr>())
++    AddGlobalAnnotations(FD, F);
+ }
+ 
+ void CodeGenModule::addUsedGlobal(llvm::GlobalValue *GV) {
+@@ -1365,9 +1368,25 @@ void CodeGenModule::EmitDeferred() {
+ }
+ 
+ void CodeGenModule::EmitGlobalAnnotations() {
+-  if (Annotations.empty())
++  if (NeededAnnotations.empty())
+     return;
+ 
++  std::vector<llvm::Constant*> Annotations;
++
++  for (AnnotationMap::const_iterator it = NeededAnnotations.begin(),
++       end = NeededAnnotations.end(); it != end; ++it) {
++    llvm::Value* V = it->second;
++    if (!V)
++      continue;
++    llvm::GlobalValue* GV = cast<llvm::GlobalValue>(V);
++    const ValueDecl* D = it->first;
++    // Get the struct elements for these annotations.
++    for (specific_attr_iterator<AnnotateAttr>
++        ai = D->specific_attr_begin<AnnotateAttr>(),
++        ae = D->specific_attr_end<AnnotateAttr>(); ai != ae; ++ai)
++      Annotations.push_back(EmitAnnotateAttr(GV, *ai, D->getLocation()));
++  }
++
+   // Create a new global variable for the ConstantStruct in the Module.
+   llvm::Constant *Array = llvm::ConstantArray::get(llvm::ArrayType::get(
+     Annotations[0]->getType(), Annotations.size()), Annotations);
+@@ -1430,9 +1449,7 @@ llvm::Constant *CodeGenModule::EmitAnnotateAttr(llvm::GlobalValue *GV,
+ void CodeGenModule::AddGlobalAnnotations(const ValueDecl *D,
+                                          llvm::GlobalValue *GV) {
+   assert(D->hasAttr<AnnotateAttr>() && "no annotate attribute");
+-  // Get the struct elements for these annotations.
+-  for (const auto *I : D->specific_attrs<AnnotateAttr>())
+-    Annotations.push_back(EmitAnnotateAttr(GV, I, D->getLocation()));
++  NeededAnnotations[D] = GV;
+ }
+ 
+ bool CodeGenModule::isInSanitizerBlacklist(llvm::Function *Fn,
+diff --git a/lib/CodeGen/CodeGenModule.h b/lib/CodeGen/CodeGenModule.h
+index 36f6785..9449010 100644
+--- a/lib/CodeGen/CodeGenModule.h
++++ b/lib/CodeGen/CodeGenModule.h
+@@ -364,7 +364,8 @@ private:
+   llvm::StringMap<GlobalDecl, llvm::BumpPtrAllocator> Manglings;
+ 
+   /// Global annotations.
+-  std::vector<llvm::Constant*> Annotations;
++  typedef std::map<const ValueDecl*, llvm::WeakVH> AnnotationMap;
++  AnnotationMap NeededAnnotations;
+ 
+   /// Map used to get unique annotation strings.
+   llvm::StringMap<llvm::Constant*> AnnotationStrings;
