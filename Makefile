@@ -21,7 +21,8 @@ llvm: patch
           -DLLVM_TARGETS_TO_BUILD=MSP430 \
           -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
           ..
-	cd llvm/build ; make -j 2
+	cd llvm/build ; ${MAKE} -j 2
+	cd llvm/build ; ${MAKE} install
 
 
 clean: unpatch
