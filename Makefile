@@ -12,6 +12,9 @@ all:
 	mkdir -p ${INSTALL_DIR}
 	${MAKE} llvm sancus-core sancus-compiler sancus-support
 
+examples:
+	${SANCUSMAKE} -C sancus-examples all
+
 
 # ---------------------------------------------------------------------------
 .PHONY: llvm sancus-core sancus-compiler sancus-support

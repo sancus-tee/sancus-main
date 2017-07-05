@@ -13,3 +13,6 @@
 [submodule "llvm"]
 	path = llvm
 	url = http://llvm.org/git/llvm.git
+[submodule "sancus-examples"]
+	path = sancus-examples
+	url = git@github.com:sancus-pma/sancus-examples.git
