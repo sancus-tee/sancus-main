@@ -14,5 +14,7 @@ cd sancus main
 git submodule init
 git submodule update
 make
+make examples-build
+make examples-sim
 ```
 

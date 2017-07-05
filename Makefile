@@ -1,10 +1,10 @@
 
 INSTALL_PREFIX = $(shell pwd)
-INSTALL_DIR = ${INSTALL_PREFIX}/sancus
+INSTALL_DIR    = ${INSTALL_PREFIX}/sancus
 
-SET_ENV      = export PATH=${INSTALL_DIR}/bin:$$PATH; \
-               export LD_LIBRARY_PATH=${INSTALL_DIR}/lib:$$LD_LIBRARY_PATH;
-SANCUSMAKE   = ${SET_ENV} ${MAKE}
+SET_ENV        = export PATH=${INSTALL_DIR}/bin:$$PATH; \
+                 export LD_LIBRARY_PATH=${INSTALL_DIR}/lib:$$LD_LIBRARY_PATH;
+SANCUSMAKE     = ${SET_ENV} ${MAKE}
 
 
 # ---------------------------------------------------------------------------
@@ -12,8 +12,18 @@ all:
 	mkdir -p ${INSTALL_DIR}
 	${MAKE} llvm sancus-core sancus-compiler sancus-support
 
-examples:
-	${SANCUSMAKE} -C sancus-examples all
+
+# ---------------------------------------------------------------------------
+examples: examples-build examples-sim
+
+examples-build:
+	${SANCUSMAKE} -C sancus-examples MODE=build
+
+examples-sim:
+	${SANCUSMAKE} -C sancus-examples MODE=sim
+
+examples-load:
+	${SANCUSMAKE} -C sancus-examples MODE=load
 
 
 # ---------------------------------------------------------------------------
@@ -28,39 +38,39 @@ unpatch:
 	patch -p1 -R < ../clang.patch
 
 sancus-core:
-	mkdir -p sancus-core/build
-	cd sancus-core/build && \
+	mkdir -p $@/build
+	cd $@/build && \
          ${SET_ENV} cmake -DLLVM_DIR=${INSTALL_DIR}/share/llvm/cmake/ \
          -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
          ..
-	cd sancus-core/build && ${MAKE} install
+	cd $@/build && ${MAKE} install
 
 sancus-compiler:
-	mkdir -p sancus-compiler/build
-	cd sancus-compiler/build && \
+	mkdir -p $@/build
+	cd $@/build && \
          ${SET_ENV} cmake -DLLVM_DIR=${INSTALL_DIR}/share/llvm/cmake/ \
          -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
          ..
-	cd sancus-compiler/build && ${SANCUSMAKE} install
+	cd $@/build && ${SANCUSMAKE} install
 
 sancus-support:
-	mkdir -p sancus-support/build
-	cd sancus-support/build && \
+	mkdir -p $@/build
+	cd $@/build && \
          ${SET_ENV} cmake -DLLVM_DIR=${INSTALL_DIR}/share/llvm/cmake/ \
          -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
          -DCMAKE_BUILD_TYPE=Release \
          ..
-	cd sancus-support/build && ${SANCUSMAKE} install
+	cd $@/build && ${SANCUSMAKE} install
 
 llvm: patch
-	mkdir -p llvm/build
-	cd llvm/tools && ln -s ../../clang clang
-	cd llvm/build && cmake \
+	mkdir -p $@/build
+	cd $@/tools && ln -s ../../clang clang
+	cd $@/build && cmake \
           -DLLVM_TARGETS_TO_BUILD=MSP430 \
           -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
           ..
-	cd llvm/build && ${MAKE} -j 2
-	cd llvm/build && ${MAKE} install
+	cd $@/build && ${MAKE} -j 2
+	cd $@/build && ${MAKE} install
 
 
 # ---------------------------------------------------------------------------
@@ -70,8 +80,10 @@ clean: unpatch
 	rm -rf sancus-core/build
 	rm -rf sancus-compiler/build
 	rm -rf sancus-support/build
+	${SANCUSMAKE} -C sancus-examples clean
 
 distclean: clean
 	rm -rf ${INSTALL_DIR}
+	${SANCUSMAKE} -C sancus-examples distclean
 
 
