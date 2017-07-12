@@ -3,8 +3,10 @@ INSTALL_PREFIX = $(shell pwd)
 INSTALL_DIR    = ${INSTALL_PREFIX}/sancus
 
 SET_ENV        = export PATH=${INSTALL_DIR}/bin:$$PATH; \
-                 export LD_LIBRARY_PATH=${INSTALL_DIR}/lib:$$LD_LIBRARY_PATH;
-SANCUSMAKE     = ${SET_ENV} ${MAKE}
+                 export LD_LIBRARY_PATH=${INSTALL_DIR}/lib:$$LD_LIBRARY_PATH; \
+                 export SANCUS_DIR=${INSTALL_DIR};
+SANCUSMAKE     = ${SET_ENV} ${MAKE} \
+                 SANCUS_SUPPORT_DIR=${INSTALL_DIR}/share/sancus-support
 
 
 # ---------------------------------------------------------------------------
@@ -17,7 +19,7 @@ all:
 examples: examples-build examples-sim
 
 examples-build:
-	${SANCUSMAKE} -C sancus-examples MODE=build
+	${SANCUSMAKE} -C sancus-examples MODE=all
 
 examples-sim:
 	${SANCUSMAKE} -C sancus-examples MODE=sim
