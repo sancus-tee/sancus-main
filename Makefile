@@ -1,4 +1,10 @@
 
+
+TI_MSPGCC_URL  = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/
+TI_MSPGCC_VERS = msp430-gcc-6.2.1.16_linux64
+TI_MSPGCC_FILE = ${TI_MSPGCC_VERS}.tar.bz2
+
+SANCUS_MAIN    = $(shell pwd)
 INSTALL_PREFIX = $(shell pwd)
 INSTALL_DIR    = ${INSTALL_PREFIX}/sancus
 
@@ -47,7 +53,14 @@ sancus-core:
          ..
 	cd $@/build && ${MAKE} install
 
-sancus-compiler:
+${TI_MSPGCC_FILE}:
+	wget ${TI_MSPGCC_URL}${TI_MSPGCC_FILE}
+
+ti-msp-gcc: ${TI_MSPGCC_FILE}
+	cd ${INSTALL_DIR}/ && bunzip2 -c ${SANCUS_MAIN}/${TI_MSPGCC_FILE} \
+          | tar --strip-components=1 -xv
+
+sancus-compiler: ti-msp-gcc
 	mkdir -p $@/build
 	cd $@/build && \
          ${SET_ENV} cmake -DLLVM_DIR=${INSTALL_DIR}/share/llvm/cmake/ \
