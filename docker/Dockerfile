@@ -55,8 +55,8 @@ RUN cd /tmp \
     && git clone https://github.com/sancus-pma/sancus-main.git \
     && cd sancus-main/ && git submodule init \
     && git submodule update \
-      sancus-compiler sancus-core sancus-examples sancus-support \
-    && cd docker/ && make -f Makefile.build
+      sancus-compiler sancus-core sancus-examples sancus-support
+RUN cd /tmp/sancus-main/docker/ && make -f Makefile.build
 
 
 # overwrite this with 'CMD []' in a dependent Dockerfile

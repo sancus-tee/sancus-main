@@ -20,7 +20,7 @@ endif
 ifdef BUILD_LLVM
 $(info BUILD_LLVM defined)
 else
-$(error BUILD_LLVM undefined)
+$(info BUILD_LLVM undefined)
 endif
 
 
