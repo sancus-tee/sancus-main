@@ -7,7 +7,7 @@ build: ${COREIMG}
 	docker build -t vulcan ./
 
 run:
-	docker run -i -t ubuntu /bin/bash
+	docker run -i -t vulcan /bin/bash
 
 
 ${COREIMG}:

@@ -84,6 +84,7 @@ ${TI_MSPGCC_FILE}:
 ti-msp-gcc: ${TI_MSPGCC_FILE}
 	cd ${INSTALL_DIR}/ && bunzip2 -c ${SANCUS_MAIN}/${TI_MSPGCC_FILE} \
           | tar --strip-components=1 -xv
+	touch ti-msp-gcc
 
 sancus-compiler: ti-msp-gcc
 	mkdir -p $@/build
