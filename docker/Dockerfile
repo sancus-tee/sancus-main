@@ -52,10 +52,10 @@ RUN cd /tmp \
     && wget https://distrinet.cs.kuleuven.be/software/sancus/downloads/clang-sancus_4.0.0_amd64.deb \
     && dpkg -i clang-sancus_4.0.0_amd64.deb
 RUN cd /tmp \
-    && git clone https://github.com/sancus-pma/sancus-core.git \
-    && cd sancus-core \
-    && git checkout 9269c7f \
-    && mkdir -p build && cd build && cmake .. && make install
+    && git clone https://github.com/sancus-pma/sancus-main.git \
+    && cd sancus-main/ && git submodule init && git submodule update \
+    && docker/ && make -f Makefile.build
+
 
 # overwrite this with 'CMD []' in a dependent Dockerfile
 CMD ["/bin/bash"]

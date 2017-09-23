@@ -1,0 +1,11 @@
+
+SANCUS_MAIN    = $(shell pwd)/..
+INSTALL_PREFIX = /usr/local/
+INSTALL_DIR    = ${INSTALL_PREFIX}
+
+# BUILD_LLVM     = true
+
+
+include ../Makefile.toolchain
+
+
