@@ -56,6 +56,7 @@ RUN cd /tmp \
     && cd sancus-main/ && git submodule init \
     && git submodule update \
       sancus-compiler sancus-core sancus-examples sancus-support
+RUN apt-get -y install bzip2
 RUN cd /tmp/sancus-main/ && git pull && make -f docker/Makefile.build
 
 
