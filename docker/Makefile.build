@@ -6,6 +6,6 @@ INSTALL_DIR    = ${INSTALL_PREFIX}
 # BUILD_LLVM     = true
 
 
-include ../Makefile.toolchain
+include Makefile.toolchain
 
 
