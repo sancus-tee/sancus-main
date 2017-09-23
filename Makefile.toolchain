@@ -24,8 +24,10 @@ $(info BUILD_LLVM undefined)
 endif
 
 
+# check here: http://www.ti.com/tool/msp430-gcc-opensource
+# current: http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/msp430-gcc-6.4.0.32_linux64.tar.bz2
 TI_MSPGCC_URL  = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/
-TI_MSPGCC_VERS = msp430-gcc-6.2.1.16_linux64
+TI_MSPGCC_VERS = msp430-gcc-6.4.0.32_linux64
 TI_MSPGCC_FILE = ${TI_MSPGCC_VERS}.tar.bz2
 
 SET_ENV        = export PATH=${INSTALL_DIR}/bin:$$PATH; \
