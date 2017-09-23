@@ -57,7 +57,14 @@ RUN cd /tmp \
     && git submodule update \
       sancus-compiler sancus-core sancus-examples sancus-support
 RUN apt-get -y install bzip2
-RUN cd /tmp/sancus-main/ && git pull && make -f docker/Makefile.build
+RUN cd /tmp/sancus-main/ && git pull \
+    && make -f docker/Makefile.build sancus-core
+RUN cd /tmp/sancus-main/ && git pull \
+    && make -f docker/Makefile.build ti-msp-gcc
+#RUN cd /tmp/sancus-main/ && git pull \
+#    && make -f docker/Makefile.build sancus-compiler
+#RUN cd /tmp/sancus-main/ && git pull \
+#    && make -f docker/Makefile.build sancus-support
 
 
 # overwrite this with 'CMD []' in a dependent Dockerfile
