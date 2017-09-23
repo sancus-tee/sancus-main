@@ -47,7 +47,7 @@ RUN mkdir -p /run/systemd && echo 'docker' > /run/systemd/container
 
 # Sancus installation
 RUN apt-get update
-RUN apt-get -y install wget git python2.7 iverilog cmake tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu g++-4.7
+RUN apt-get -y install bzip2 wget git python2.7 iverilog cmake tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu g++-4.7
 RUN cd /tmp \
     && wget https://distrinet.cs.kuleuven.be/software/sancus/downloads/clang-sancus_4.0.0_amd64.deb \
     && dpkg -i clang-sancus_4.0.0_amd64.deb
@@ -56,7 +56,6 @@ RUN cd /tmp \
     && cd sancus-main/ && git submodule init \
     && git submodule update \
       sancus-compiler sancus-core sancus-examples sancus-support
-RUN apt-get -y install bzip2
 RUN cd /tmp/sancus-main/ && git pull \
     && make -f docker/Makefile.build sancus-core
 RUN cd /tmp/sancus-main/ && git pull \
