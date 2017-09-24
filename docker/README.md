@@ -33,7 +33,8 @@ This message shows that your installation appears to be working correctly.
 ### 4. Build and run the 'sancus-devel' image
 
 ```bash
-$ make build
+$ make build  # to override default security level (64 bits), use \
+              # SANCUS_SECURITY=128 SANCUS_KEY=deadbeefcafebabec0defeeddefec8ed
 $ make run
 ```
 

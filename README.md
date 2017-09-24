@@ -11,7 +11,7 @@ example programs.
 To get started quickly, we also provide a Docker script that uses the Makefile
 to automatically build an Ubuntu 16.04-based 'sancus-devel' container. Simply
 execute `make docker` to build and run the Docker container, or see the
-'docker' subdirectory for detailed instructions.
+[docker](docker) subdirectory for detailed instructions.
 
 ## Requirements and Dependencies:
 
@@ -51,8 +51,8 @@ $ sudo make install_deps # use TI_MSPGCC_INSTALL_PREFIX=dir to override      \
 
 # 2. Clone relevant Sancus project git repositories
 $ make                   # to override default security level (64 bits), use \
-                         # SANCUS_SECURITY=128 and                           \
-                         # SANCUS_KEY=deadbeefcafebabec0defeeddefec8ed       \
+                         # SANCUS_SECURITY=128                               \
+                         # SANCUS_KEY=deadbeefcafebabec0defeeddefec8ed
 
 # 3. Build and install Sancus toolchain
 $ sudo make install      # use SANCUS_INSTALL_PREFIX=dir to override default \
