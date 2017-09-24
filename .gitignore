@@ -1,1 +1,14 @@
-sancus
+*.deb
+*.tar*
+
+debian-deps
+pip-deps
+ti-mspgcc
+clang-deb-install
+
+sancus-core/
+sancus-compiler/
+sancus-support/
+sancus-examples/
+
+*.swp

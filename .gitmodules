@@ -1,18 +1,6 @@
-[submodule "sancus-support"]
-	path = sancus-support
-	url = https://github.com/sancus-pma/sancus-support.git
-[submodule "sancus-compiler"]
-	path = sancus-compiler
-	url = https://github.com/sancus-pma/sancus-compiler.git
-[submodule "sancus-core"]
-	path = sancus-core
-	url = https://github.com/sancus-pma/sancus-core.git
 [submodule "clang"]
 	path = clang
 	url = http://llvm.org/git/clang.git
 [submodule "llvm"]
 	path = llvm
 	url = http://llvm.org/git/llvm.git
-[submodule "sancus-examples"]
-	path = sancus-examples
-	url = https://github.com/sancus-pma/sancus-examples.git

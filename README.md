@@ -1,5 +1,9 @@
 # sancus-main
 
+sudo make install_deps TI_MSPGCC_INSTALL_PREFIX=jo
+make
+sudo make install SANCUS_INSTALL_PREFIX=jo
+
 Requirements and Dependencies:
 
 - **cmake**
