@@ -87,8 +87,13 @@ sancus-%:
              -DSECURITY=$(SANCUS_SECURITY) -DMASTER_KEY=$(SANCUS_KEY) ..
 
 %-install: %-build
-	$(info .. Installing $* to $(SANCUS_INSTALL_PREFIX))
+	$(info .. Installing sancus-$* to $(SANCUS_INSTALL_PREFIX))
 	cd sancus-$*/build && $(MAKE) install
+
+# ---------------------------------------------------------------------------
+.PHONY: docker
+docker:
+	$(MAKE) -C docker all
 
 # ---------------------------------------------------------------------------
 examples:

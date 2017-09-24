@@ -1,4 +1,5 @@
 # sancus-main
+[![Build Status](https://travis-ci.org/sancus-pma/sancus-examples.svg?branch=master)](https://travis-ci.org/sancus-pma/sancus-examples)
 
 This repository contains a build script (Makefile) to create a working
 [Sancus](https://distrinet.cs.kuleuven.be/software/sancus/) development
@@ -8,7 +9,9 @@ environment, including simulator, compiler/toolchain, support libraries, and
 example programs.
 
 To get started quickly, we also provide a Docker script that uses the Makefile
-to automatically build an Ubuntu 16.04-based `sancus-devel` container.
+to automatically build an Ubuntu 16.04-based 'sancus-devel' container. Simply
+execute `make docker` to build and run the Docker container, or see the
+'docker' subdirectory for detailed instructions.
 
 ## Requirements and Dependencies:
 
@@ -48,7 +51,7 @@ $ sudo make install_deps # use TI_MSPGCC_INSTALL_PREFIX=dir to override      \
 
 # 2. Clone relevant Sancus project git repositories
 $ make                   # to override default security level (64 bits), use \
-                         # SANCUS_SECURITY=128                               \
+                         # SANCUS_SECURITY=128 and                           \
                          # SANCUS_KEY=deadbeefcafebabec0defeeddefec8ed       \
 
 # 3. Build and install Sancus toolchain
@@ -70,8 +73,7 @@ To remove the Sancus installation directory system-wide:
 $ sudo make uninstall
 ```
 
-## Testing
-[![Build Status](https://travis-ci.org/sancus-pma/sancus-examples.svg?branch=master)](https://travis-ci.org/sancus-pma/sancus-examples)
+## Example Programs
 
 To test your newly installed Sancus distribution, run the example programs/test
 suite in the simulator (might take a long time since the hardware design is

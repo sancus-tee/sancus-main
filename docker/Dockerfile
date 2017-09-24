@@ -1,77 +1,27 @@
-# based on https://github.com/tianon/docker-brew-ubuntu-core/blob/31ebd22e9e83185d69d50b3492911aedf519dd4a/xenial/Dockerfile
+# Clean Ubuntu 16.04 container
+FROM ubuntu:16.04
+RUN apt-get update -yqq
+RUN apt-get -yqq install build-essential git lsb-release
 
-FROM scratch
-ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /
+# Config parameters
+ARG SANCUS_SECURITY=64
+ARG SANCUS_KEY=deadbeefcafebabe
+WORKDIR sancus
 
-# a few minor docker-specific tweaks
-# see https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap
-RUN set -xe \
-	\
-# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L40-L48
-	&& echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
-	&& echo 'exit 101' >> /usr/sbin/policy-rc.d \
-	&& chmod +x /usr/sbin/policy-rc.d \
-	\
-# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L54-L56
-	&& dpkg-divert --local --rename --add /sbin/initctl \
-	&& cp -a /usr/sbin/policy-rc.d /sbin/initctl \
-	&& sed -i 's/^exit.*/exit 0/' /sbin/initctl \
-	\
-# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L71-L78
-	&& echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/docker-apt-speedup \
-	\
-# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L85-L105
-	&& echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' > /etc/apt/apt.conf.d/docker-clean \
-	&& echo 'APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' >> /etc/apt/apt.conf.d/docker-clean \
-	&& echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/docker-clean \
-	\
-# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L109-L115
-	&& echo 'Acquire::Languages "none";' > /etc/apt/apt.conf.d/docker-no-languages \
-	\
-# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L118-L130
-	&& echo 'Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";' > /etc/apt/apt.conf.d/docker-gzip-indexes \
-	\
-# https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L134-L151
-	&& echo 'Apt::AutoRemove::SuggestsImportant "false";' > /etc/apt/apt.conf.d/docker-autoremove-suggests
+# Build and install latest Sancus toolchain
+RUN git clone https://github.com/sancus-pma/sancus-main.git .
+RUN make install clean SANCUS_SECURITY=$SANCUS_SECURITY SANCUS_KEY=$SANCUS_KEY
 
-# delete all the apt list files since they're big and get stale quickly
-RUN rm -rf /var/lib/apt/lists/*
-# this forces "apt-get update" in dependent images, which is also good
+# Display a welcome message for interactive sessions
+RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' \
+    >> /etc/bash.bashrc ; echo "\
+========================================================================\n\
+= Sancus development Docker container                                  =\n\
+========================================================================\n\
+`lsb_release -d`\n\n\
+To get started, see <https://distrinet.cs.kuleuven.be/software/sancus/>,\n\
+or have a look at the example programs under </sancus/sancus-examples/>.\n\
+\n"\
+> /etc/motd
 
-# enable the universe
-RUN sed -i 's/^#\s*\(deb.*universe\)$/\1/g' /etc/apt/sources.list
-
-# make systemd-detect-virt return "docker"
-# See: https://github.com/systemd/systemd/blob/aa0c34279ee40bce2f9681b496922dedbadfca19/src/basic/virt.c#L434
-RUN mkdir -p /run/systemd && echo 'docker' > /run/systemd/container
-
-# Sancus installation
-RUN apt-get update
-RUN apt-get -y install bzip2 wget git python2.7 iverilog cmake tk \
-      binutils-msp430 gcc-msp430 msp430-libc msp430mcu g++-4.7 \
-      vim build-essential python3.3 python3-pip
-RUN pip3 install --upgrade pip
-RUN pip3 install pyelftools
-RUN cd /tmp \
-    && wget https://distrinet.cs.kuleuven.be/software/sancus/downloads/clang-sancus_4.0.0_amd64.deb \
-    && dpkg -i clang-sancus_4.0.0_amd64.deb
-RUN cd /tmp \
-    && git clone https://github.com/sancus-pma/sancus-main.git \
-    && cd sancus-main/ && git submodule init \
-    && git submodule update \
-      sancus-compiler sancus-core sancus-examples sancus-support
-RUN cd /tmp/sancus-main/ \
-    && make -f docker/Makefile.build sancus-core
-RUN cd /tmp/sancus-main/ \
-    && make -f docker/Makefile.build ti-msp-gcc
-RUN cd /tmp/sancus-main/ \
-    && make -f docker/Makefile.build sancus-compiler
-RUN cd /tmp/sancus-main/ \
-    && make -f docker/Makefile.build sancus-support
-RUN cd /tmp/sancus-main/sancus-examples/hello-world/ \
-    && make sim
-
-# overwrite this with 'CMD []' in a dependent Dockerfile
-CMD ["/bin/bash"]
-
-
+CMD /bin/bash

@@ -1,46 +1,28 @@
-# sancus-mail/docker
+# sancus-main/docker
 
 The scripts in this directory allow you to build a docker image that
-contains the sancus toolchain, ready to run the example programs and to
+contains the Sancus toolchain, ready to run the example programs and to
 start your own experiments.
-
 
 ## Install docker
 
-Quick installation guide (Debian Linux and Ubuntu), loosely based on
+Quick installation guide (Debian GNU/Linux and Ubuntu), loosely based on
 https://docs.docker.com/get-started/
 
-### 1. Install prerequisites
+### 1. Install docker
+
 ```bash
-# apt-get install \
-     apt-transport-https \
-     ca-certificates \
-     curl \
-     gnupg2 \
-     software-properties-common
+# apt-get install docker.io
 ```
 
-### 2. Setup docker repository 
+### 2. Configure user access
+
 ```bash
-# curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | apt-key add -
-# add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-   $(lsb_release -cs) \
-   stable"
+# usermod -aG docker $(whoami) # add users to docker group, then re-login.
 ```
 
-### 3. Install docker
-```bash
-# apt-get update
-# apt-get install docker-ce
-```
+### 3. Check your docker installation
 
-### 4. Configure user access
-```bash
-# vi /etc/group ; add relevant users to docker group, then re-login.
-```
-
-### 5. Check your docker installation
 ```bash
 $ docker run hello-world
 [...]
@@ -48,19 +30,20 @@ This message shows that your installation appears to be working correctly.
 [...]
 ```
 
-### 6. Build and run the 'sancus' image
+### 4. Build and run the 'sancus-devel' image
+
 ```bash
 $ make build
 $ make run
 ```
 
-### 7. Play sancus
+### 7. Play Sancus
 
-You are now running the 'sancus' container. Try running one of the
+You are now running the 'sancus-devel' container. Try running one of the
 examples:
 
 ```bash
-# cd /tmp/sancus-main/sancus-examples/hello-world/
+# cd /sancus/sancus-examples/hello-world/
 # make sim
 sancus-sim --ram 16K --rom 41K  main.elf
 === Spongent parameters ===
