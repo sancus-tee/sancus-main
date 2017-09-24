@@ -64,6 +64,7 @@ sancus-core:
 	cd $@/build && \
          ${SET_ENV} cmake -DLLVM_DIR=${INSTALL_DIR}/share/llvm/cmake/ \
          -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
+         -DSECURITY=128 \
          ..
 	cd $@/build && ${MAKE} install
 
@@ -80,6 +81,7 @@ sancus-compiler: ti-msp-gcc
 	cd $@/build && \
          ${SET_ENV} cmake -DLLVM_DIR=${INSTALL_DIR}/share/llvm/cmake/ \
          -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
+         -DSECURITY=128 \
          ..
 	cd $@/build && ${SANCUSMAKE} install
 

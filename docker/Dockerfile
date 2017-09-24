@@ -68,6 +68,8 @@ RUN cd /tmp/sancus-main/ \
     && make -f docker/Makefile.build sancus-compiler
 RUN cd /tmp/sancus-main/ \
     && make -f docker/Makefile.build sancus-support
+RUN cd /tmp/sancus-examples/hello-world/ \
+    && make sim
 
 # overwrite this with 'CMD []' in a dependent Dockerfile
 CMD ["/bin/bash"]
