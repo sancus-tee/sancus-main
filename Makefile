@@ -106,8 +106,10 @@ clean:
 	$(RM) sancus-*/build
 	$(RM) $(SANCUS_CLANG_DEB) $(TI_MSPGCC_TAR)
 
-distclean:
+distclean: clean
 	$(RM) sancus-core sancus-compiler sancus-support sancus-examples
+
+uninstall: distclean
 	$(RM) $(SANCUS_INSTALL_PREFIX)/share/sancus*
 	$(RM) $(SANCUS_INSTALL_PREFIX)/bin/sancus-*
 	$(RM) $(SANCUS_INSTALL_PREFIX)/lib/SancusModuleCreator.so
