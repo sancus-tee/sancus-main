@@ -45,19 +45,8 @@ endif
 
 
 # ---------------------------------------------------------------------------
-examples: examples-build examples-sim
-
-examples-build:
-	${SANCUSMAKE} -C sancus-examples MODE=all
-
-examples-sim:
-	${SANCUSMAKE} -C sancus-examples MODE=sim
-
-examples-load:
-	${SANCUSMAKE} -C sancus-examples MODE=load
-
-examples-clean:
-	${SANCUSMAKE} -C sancus-examples clean
+examples:
+	$(info Try "cd ${SANCUS_MAIN}/sancus-examples/<example dir>; make sim")
 
 # ---------------------------------------------------------------------------
 .PHONY: llvm sancus-core sancus-compiler sancus-support
