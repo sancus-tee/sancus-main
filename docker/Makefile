@@ -4,10 +4,10 @@ COREIMG = ubuntu-xenial-core-cloudimg-amd64-root.tar.gz
 all:
 
 build: ${COREIMG}
-	docker build -t vulcan ./
+	docker build -t sancus ./
 
 run:
-	docker run -i -t vulcan /bin/bash
+	docker run -i -t sancus /bin/bash
 
 
 ${COREIMG}:
