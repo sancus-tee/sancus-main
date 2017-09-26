@@ -1,7 +1,7 @@
 # Clean Ubuntu 16.04 container
 FROM ubuntu:16.04
 RUN apt-get update -yqq
-RUN apt-get -yqq install build-essential git lsb-release
+RUN apt-get -yqq install build-essential git lsb-release sloccount
 
 # Config parameters
 ARG SANCUS_SECURITY=64
