@@ -78,8 +78,14 @@ clang-sancus: $(SANCUS_CLANG)
 
 # ---------------------------------------------------------------------------
 # Sancus project GitHub repositories
+REMOTE_IS_SSH = $(shell git config --get remote.origin.url | grep "git@github.com" >/dev/null; echo $$?)
+
 sancus-%:
+ifeq ($(REMOTE_IS_SSH), 1)
 	git clone https://github.com/sancus-pma/$@.git
+else
+	git clone git@github.com:sancus-pma/$@.git
+endif
 
 %-build: sancus-%
 	mkdir -p sancus-$*/build && cd sancus-$*/build && \
