@@ -6,9 +6,14 @@ CMAKE   = $(SET_ENV) cmake
 MAKE    = $(SET_ENV) make
 
 # ---------------------------------------------------------------------------
+# Main installation targets
 all: sancus-core sancus-compiler sancus-support sancus-examples
 install_deps: debian-deps pip-deps ti-mspgcc clang-sancus
 install: install_deps core-install compiler-install support-install sancus-examples
+
+# Convenience targets for developers
+update: core-update compiler-update support-update examples-update
+build: core-build compiler-build support-build
 
 # ---------------------------------------------------------------------------
 # apt-get prerequisites as provided by Ubuntu 16.04 LTS
@@ -86,6 +91,9 @@ ifeq ($(REMOTE_IS_SSH), 1)
 else
 	git clone git@github.com:sancus-pma/$@.git
 endif
+
+%-update: sancus-%
+	cd sancus-$*/ ; git pull
 
 %-build: sancus-%
 	mkdir -p sancus-$*/build && cd sancus-$*/build && \
