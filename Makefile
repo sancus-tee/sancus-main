@@ -57,27 +57,51 @@ clang-deb-install: $(SANCUS_CLANG_DEB)
 
 # ---------------------------------------------------------------------------
 # Optionally patch LLVM/Clang from source
-patch: clang.patch
+clang_patch: clang.patch
 	git submodule init
 	git submodule update
 	cd clang ; \
 	patch -p1 < ../clang.patch
 
-unpatch:
+clang_unpatch:
 	cd clang ; \
 	patch -p1 -R < ../clang.patch
 
-llvm: patch
+LLVM_BUILD_FLAGS = -DLLVM_TARGETS_TO_BUILD=MSP430 \
+                   -DCMAKE_INSTALL_PREFIX=$(SANCUS_INSTALL_PREFIX)
+
+ifeq ($(UNAME_M),armv7l)
+	# This is meant to work for raspbian/debian Stretch
+	LLVM_BUILD_FLAGS += -DCMAKE_BUILD_TYPE=Release
+	# Default checkinstall is buggy:
+	# https://github.com/giuliomoro/checkinstall/commit/57ad1473bdfc5aadd2c921d6990e069809f442d4
+	CHECKINSTALL = /usr/local/sbin/checkinstall
+else
+	CHECKINSTALL = checkinstall
+endif
+
+llvm: clang_patch
 	$(info .. Building and installing patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
+	$(info .. Building LLVM/Clang on/for $(UNAME_M): use 2GiB swap and ld.gold)
 	mkdir -p $@/build
-	cd $@/tools && ln -s ../../clang clang
-	cd $@/build && cmake \
-          -DLLVM_TARGETS_TO_BUILD=MSP430 \
-          -DCMAKE_INSTALL_PREFIX=$(SANCUS_INSTALL_PREFIX) ..
+	cd $@/tools && ln -sf ../../clang clang
+	cd $@/build && cmake $(LLVM_BUILD_FLAGS) ..
 	cd $@/build && $(MAKE) -j 2
 
-llvm-install: llvm
-	cd $@/build && $(MAKE) install
+llvm-install-deb: llvm
+	$(info .. Building and installing .deb of patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
+	cd llvm/build/ && \
+	  echo "Clang with Sancus patches." >description-pak && \
+	  $(CHECKINSTALL) -y -D --install=no --backup=no \
+	  --pkgname=clang-sancus --pkgversion=4.0.1 --pkgrelease=2 \
+	  --pkgsource="https://distrinet.cs.kuleuven.be/software/sancus/" \
+	  --pakdir=../../ --provides=clang-sancus \
+	  --maintainer='Jan Tobias Muehlberg <jantobias.muehlberg@cs.kuleuven.be>' \
+	  --deldoc --deldesc --delspec
+
+llvm-install:
+	$(info .. Installing patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
+	cd llvm/build && $(MAKE) install
 
 clang-sancus: $(SANCUS_CLANG)
 
