@@ -4,7 +4,7 @@ WGET    = wget -nv
 RM      = rm -Rf
 CMAKE   = $(SET_ENV) cmake
 MAKE    = $(SET_ENV) make
-
+SUDO    = sudo
 
 
 # ---------------------------------------------------------------------------
@@ -34,6 +34,10 @@ pip-deps: debian-deps
 	pip3 install pyelftools \
         && printf "import elftools\nprint(elftools)" | python3
 	touch pip-deps
+
+# ---------------------------------------------------------------------------
+# Package genaration targets:
+-include Makefile.pkgs
 
 # ---------------------------------------------------------------------------
 # TI's MSP430 GCC compiler port (needed for most recent MSP430 GNU binutils)

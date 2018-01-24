@@ -12,6 +12,7 @@ endif
 TI_MSPGCC_VER     = 6.4.0.32
 TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)_source-full
 TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
+TI_MSPGCC_PREFIX  = /usr/local
 
 $(TI_MSPGCC_SRC_TBZ):
 	$(WGET) http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/$(TI_MSPGCC_SRC_TBZ)
@@ -23,15 +24,16 @@ ti-mspgcc-build:
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  ./configure --target=msp430-elf \
 	    --enable-languages=c,c++ --disable-nls \
-	    --prefix=/usr/local --disable-sim --disable-gdb --disable-werror
+	    --prefix=$(TI_MSPGCC_PREFIX) \
+	    --disable-sim --disable-gdb --disable-werror
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  $(MAKE)
 
 ti-mspgcc-deb:
-	sudo mkdir -p /usr/local/msp430-elf/lib
+	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/msp430-elf/lib
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  echo "TI MSP430-GCC binutils for Sancus." >description-pak && \
-	  sudo $(CHECKINSTALL) -y -D --install=no --backup=no \
+	  $(SUDO) $(CHECKINSTALL) -y -D --install=no --backup=no \
 	  --pkgname=ti-mspgcc-binutils-sancus --pkgversion=$(TI_MSPGCC_VER) \
 	  --pkgrelease=1 \
 	  --pkgsource="http://www.ti.com/tool/msp430-gcc-opensource" \
@@ -40,9 +42,9 @@ ti-mspgcc-deb:
 	  --deldoc --deldesc --delspec
 
 ti-mspgcc-inst:
-	sudo mkdir -p /usr/local/msp430-elf/lib
+	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/msp430-elf/lib
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
-	  sudo $(MAKE) install
+	  $(SUDO) $(MAKE) install
 
 # ---------------------------------------------------------------------------
 # Optionally patch LLVM/Clang from source
@@ -79,7 +81,7 @@ llvm-install-deb: llvm
 	$(info .. Building .deb of patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
 	cd llvm/build/ && \
 	  echo "Clang with Sancus patches." >description-pak && \
-	  $(CHECKINSTALL) -y -D --install=no --backup=no \
+	  $(SUDO) $(CHECKINSTALL) -y -D --install=no --backup=no \
 	  --pkgname=clang-sancus --pkgversion=4.0.1 --pkgrelease=2 \
 	  --pkgsource="https://distrinet.cs.kuleuven.be/software/sancus/" \
 	  --pakdir=../../ --provides=clang-sancus \
@@ -89,5 +91,4 @@ llvm-install-deb: llvm
 llvm-install:
 	$(info .. Installing patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
 	cd llvm/build && $(MAKE) install
-
 
