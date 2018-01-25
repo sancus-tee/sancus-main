@@ -1,6 +1,60 @@
 
-PKG_MAINTAINER = 'Jan Tobias Muehlberg <jantobias.muehlberg@cs.kuleuven.be>'
+PKG_MAINTAINER    = 'Jan Tobias Muehlberg <jantobias.muehlberg@cs.kuleuven.be>'
 
+# ---------------------------------------------------------------------------
+# Package config for TI MSPGCC
+
+TI_MSPGCC_VER     = 6.4.0.32
+TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)_source-full
+TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
+TI_MSPGCC_SRC_URL = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/$(TI_MSPGCC_SRC_TBZ)
+TI_MSPGCC_PREFIX  = /usr/local
+
+TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
+TI_MSPGCC_PKG_REL = 1
+TI_MSPGCC_PKG_SRC = $(TI_MSPGCC_SRC_URL)
+TI_MSPGCC_PKG_DES = "TI MSP430-GCC binutils for Sancus."
+
+TI_MSPGCC_PKG_BAS = $(TI_MSPGCC_PKG)_$(TI_MSPGCC_VER)-$(TI_MSPGCC_PKG_REL)_
+ifeq ($(UNAME_M),x86_64)
+TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)amd64.deb
+endif
+ifeq ($(UNAME_M),armv7l)
+TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)armhf.deb
+endif
+
+ifndef TI_MSPGCC_PKG_DEB
+  $(error Unsupported architecture!)
+else
+  $(info TI MSPGCC package: $(TI_MSPGCC_PKG_DEB))
+endif
+
+# ---------------------------------------------------------------------------
+# Package config for LLVM/CLANG
+
+LLVM_VER          = 4.0.1
+
+LLVM_PKG          = clang-sancus
+LLVM_PKG_REL      = 2
+LLVM_PKG_SRC      = "https://distrinet.cs.kuleuven.be/software/sancus/"
+LLVM_PKG_DES      = "Clang with Sancus patches."
+
+LLVM_PKG_BAS      = $(LLVM_PKG)_$(LLVM_VER)-$(LLVM_PKG_REL)_
+ifeq ($(UNAME_M),x86_64)
+LLVM_PKG_DEB      = $(LLVM_PKG_BAS)amd64.deb
+endif
+ifeq ($(UNAME_M),armv7l)
+LLVM_PKG_DEB = $(LLVM_PKG_BAS)armhf.deb
+endif
+
+ifndef LLVM_PKG_DEB
+  $(error Unsupported architecture!)
+else
+  $(info LLVM/Clang package: $(LLVM_PKG_DEB))
+endif
+
+# ---------------------------------------------------------------------------
+# Configure checkinstall
 
 ifeq ($(UNAME_M),armv7l)
 # Default checkinstall is buggy:
@@ -10,45 +64,47 @@ else
 CHECKINSTALL = checkinstall
 endif
 
-
 # ---------------------------------------------------------------------------
-TI_MSPGCC_VER     = 6.4.0.32
-TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)_source-full
-TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
-TI_MSPGCC_PREFIX  = /usr/local
-
 $(TI_MSPGCC_SRC_TBZ):
-	$(WGET) http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/$(TI_MSPGCC_SRC_TBZ)
+	$(WGET) $(TI_MSPGCC_SRC_URL)
 
-ti-mspgcc-src: $(TI_MSPGCC_SRC_TBZ)
+$(TI_MSPGCC_SRC_DIR): $(TI_MSPGCC_SRC_TBZ)
 	bunzip2 -c $(TI_MSPGCC_SRC_TBZ) | tar -x
 
-ti-mspgcc-build:
+ti-mspgcc-build: $(TI_MSPGCC_SRC_DIR)
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  ./configure --target=msp430-elf \
 	    --enable-languages=c,c++ --disable-nls \
 	    --prefix=$(TI_MSPGCC_PREFIX) \
 	    --disable-sim --disable-gdb --disable-werror
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
-	  $(MAKE)
+	  $(MAKE) -j 2
 
-ti-mspgcc-deb:
+ti-mspgcc-deb: ti-mspgcc-build
 	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/msp430-elf/lib
+	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/share/man
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
-	  echo "TI MSP430-GCC binutils for Sancus." >description-pak && \
-	  $(CHECKINSTALL) -y -D --install=no --backup=no \
-	  --pkgname=ti-mspgcc-binutils-sancus --pkgversion=$(TI_MSPGCC_VER) \
-	  --pkgrelease=1 \
-	  --pkgsource="http://www.ti.com/tool/msp430-gcc-opensource" \
-	  --provides=ti-mspgcc-binutils-sancus \
+	  echo $(TI_MSPGCC_PKG_DES) >description-pak && \
+	  $(SUDO) $(CHECKINSTALL) -y -D --install=no --backup=no \
+	  --pkgname=$(TI_MSPGCC_PKG) --pkgversion=$(TI_MSPGCC_VER) \
+	  --pkgrelease=$(TI_MSPGCC_PKG_REL) \
+	  --pkgsource="$(TI_MSPGCC_PKG_SRC)" \
+	  --provides=$(TI_MSPGCC_PKG) \
 	  --maintainer=$(PKG_MAINTAINER) \
 	  --reset-uids --pakdir=../../ --exclude=/home \
 	  --deldoc --deldesc --delspec
 
-ti-mspgcc-inst:
+ti-mspgcc-inst: ti-mspgcc-build
 	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/msp430-elf/lib
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  $(SUDO) $(MAKE) install
+
+ti-mspgcc-clean:
+	rm -rf $(TI_MSPGCC_SRC_DIR)
+	rm -f $(TI_MSPGCC_SRC_TBZ)
+
+ti-mspgcc-distclean: ti-mspgcc-clean
+	rm -f $(TI_MSPGCC_PKG_DEB)
 
 # ---------------------------------------------------------------------------
 # Optionally patch LLVM/Clang from source
@@ -56,13 +112,13 @@ clang_patch: clang.patch
 	git submodule init
 	git submodule update
 	cd clang && \
-	  patch -p1 < ../clang.patch
-	touch clang_patch
+	  patch -p1 --forward < ../clang.patch; \
+	  retCode=$$?; \
+	  if [ $$retCode -gt 1 ]; then exit $$retCode; else exit 0; fi
 
-clang_unpatch: clang_patch
+clang_unpatch:
 	cd clang && \
 	  patch -p1 -R < ../clang.patch
-	rm -f clang_patch
 
 LLVM_BUILD_FLAGS =  -DLLVM_TARGETS_TO_BUILD="host;MSP430" \
 		    -DLLVM_TARGET_ARCH=host \
@@ -88,12 +144,12 @@ endif
 llvm-deb: llvm-build
 	$(info .. Building .deb of patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
 	cd llvm/build/ && \
-	  echo "Clang with Sancus patches." >description-pak && \
-	  $(CHECKINSTALL) -y -D --install=no --backup=no \
-	  --pkgname=clang-sancus --pkgversion=4.0.1 \
-	  --pkgrelease=2 \
-	  --pkgsource="https://distrinet.cs.kuleuven.be/software/sancus/" \
-	  --provides=clang-sancus \
+	  echo $(LLVM_PKG_DES) >description-pak && \
+	  $(SUDO) $(CHECKINSTALL) -y -D --install=no --backup=no \
+	  --pkgname=clang-sancus --pkgversion=$(LLVM_VER) \
+	  --pkgrelease=$(LLVM_PKG_REL) \
+	  --pkgsource=$(LLVM_PKG_SRC) \
+	  --provides=$(LLVM_PKG) \
 	  --maintainer=$(PKG_MAINTAINER) \
 	  --reset-uids --pakdir=../../ --exclude=/home \
 	  --deldoc --deldesc --delspec
@@ -101,4 +157,10 @@ llvm-deb: llvm-build
 llvm-inst: llvm-build
 	$(info .. Installing patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
 	cd llvm/build && $(SUDO) $(MAKE) install
+
+llvm-clean:
+	rm -rf llvm/build/
+
+llvm-distclean: llvm-clean
+	rm -f $(LLVM_PKG_DEB)
 
