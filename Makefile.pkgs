@@ -122,11 +122,13 @@ clang_unpatch:
 
 LLVM_BUILD_FLAGS =  -DLLVM_TARGETS_TO_BUILD="host;MSP430" \
 		    -DLLVM_TARGET_ARCH=host \
+		    -DCMAKE_BUILD_TYPE=Release \
                     -DCMAKE_INSTALL_PREFIX=$(SANCUS_INSTALL_PREFIX)
 
 ifeq ($(UNAME_M),armv7l)
 # This is meant to work for raspbian/debian Stretch; Release buid saves us
-# a lot of memory during compilation.
+# a lot of memory during compilation and linking. Essentially, you can't
+# build it without.
 LLVM_BUILD_FLAGS += -DCMAKE_BUILD_TYPE=Release
 endif
 

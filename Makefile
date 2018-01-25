@@ -116,6 +116,6 @@ uninstall: distclean
 	$(RM) $(SANCUS_INSTALL_PREFIX)/share/sancus*
 	$(RM) $(SANCUS_INSTALL_PREFIX)/bin/sancus-*
 	$(RM) $(SANCUS_INSTALL_PREFIX)/lib/SancusModuleCreator.so
-	$(SUDO) dpkg -r clang-sancus
-	$(SUDO) dpkg -r ti-mspgcc-binutils-sancus
+	$(SUDO) dpkg -r $(LLVM_PKG)
+	$(SUDO) dpkg -r $(TI_MSPGCC_PKG)
 
