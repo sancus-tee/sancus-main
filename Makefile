@@ -12,6 +12,7 @@ SUDO    = sudo
 all: sancus-core sancus-compiler sancus-support sancus-examples
 install_deps: debian-deps pip-deps ti-mspgcc clang-sancus
 install: install_deps core-install compiler-install support-install sancus-examples
+test: examples-sim
 
 # Convenience targets for developers
 update: core-update compiler-update support-update examples-update
@@ -85,7 +86,7 @@ endif
 
 %-install: %-build
 	$(info .. Installing sancus-$* to $(SANCUS_INSTALL_PREFIX))
-	$(SUDO) cd sancus-$*/build && $(MAKE) install
+	cd sancus-$*/build && $(SUDO) bash -c "$(MAKE) install"
 
 # ---------------------------------------------------------------------------
 .PHONY: docker
