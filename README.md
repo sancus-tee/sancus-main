@@ -9,13 +9,13 @@ environment, including simulator, compiler/toolchain, support libraries, and
 example programs.
 
 To get started quickly, we also provide a Docker script that uses the Makefile
-to automatically build an Ubuntu 16.04-based 'sancus-devel' container. Simply
+to automatically build an Ubuntu 18.04-based 'sancus-devel' container. Simply
 execute `make docker` to build and run the Docker container, or see the
 [docker](docker) subdirectory for detailed instructions.
 
 ## Requirements and Dependencies:
 
-Note: The build script was developed to work on a fresh Ubuntu 16.04
+Note: The build script was developed to work on a fresh Ubuntu 18.04
 LTS installation, but it should be fairly straightforward to port to other
 GNU/Linux distribution.
 
@@ -26,18 +26,20 @@ install_deps`:
 - **pyelftools** (Python 3+)
 - **msp430-gcc** >= 4.6
 - **msp430-elf-gcc** >= 6.0 provided by
-        [Texas Instruments](http://www.ti.com/tool/msp430-gcc-opensource)
+        [Texas Instruments](http://www.ti.com/tool/msp430-gcc-opensource) (Debian package provided, see below)
 - **iverilog** >= 0.9 (if you want to use the simulator)
-- **Clang/LLVM** >= 3.4.3 (needs to be patched; see below)
+- **Clang/LLVM** >= 3.4.3 (needs to be patched, Debian package provided; see below)
 
-While developing the Sancus compiler, we found a bug in Clang that has not yet
+While developing the Sancus compiler, we found a bug in **Clang** that has not yet
 been merged upstream, and thus needs to be patched before being able to use our
 compiler. The easiest way to do this is to install the provided [Debian
-package](https://distrinet.cs.kuleuven.be/software/sancus/install.php). This
+package](https://distrinet.cs.kuleuven.be/software/sancus/install.php) for AMD64 and ARMHF. This
 package is called clang-sancus and will be installed in /usr/local/. If you
-want to patch and build LLVM/Clang manually, you need 35GB of free disk space
-(most of this is for temporary files created by LLVM/Clang during the build
+want to patch and build LLVM/Clang manually, use/check `make llvm-inst` (you need 35GB of free disk space, most of this is for temporary files created by LLVM/Clang during the build
 process and can be cleaned up afterwards).
+
+From **msp430-elf-gcc** we need the latest `binutils` for the MSP430. As for Cland, we provide these pre-packaged for Debian-based Linux distributions on AMD64 and ARMHF. Use or check `make ti-mspgcc-inst` to build msp430-elf-gcc from source.
+
 
 ## Building Instructions:
 
@@ -46,8 +48,8 @@ $ git clone git@github.com:sancus-pma/sancus-main.git
 $ cd sancus-main
 
 # 1. Install prerequisites
-$ sudo make install_deps # use TI_MSPGCC_INSTALL_PREFIX=dir to override      \
-                         # default TI MSPGCC installation directory /opt
+$ sudo make install_deps # default installation directory for Clang and \
+                         # msp430-elf-gcc is /usr/local
 
 # 2. Clone relevant Sancus project git repositories
 $ make                   # to override default security level (64 bits), use \
@@ -56,8 +58,7 @@ $ make                   # to override default security level (64 bits), use \
 
 # 3. Build and install Sancus toolchain
 $ sudo make install      # use SANCUS_INSTALL_PREFIX=dir to override default \
-                         # installation directory /usr/local; BUILD_LLVM=1   \
-                         # to patch, build and install LLVM/Clang from source.
+                         # installation directory /usr/local
 ```
 
 To remove temporary files:
