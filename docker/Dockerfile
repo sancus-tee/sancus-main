@@ -3,20 +3,19 @@ FROM ubuntu:18.04
 RUN apt-get update -yqq
 RUN apt-get -yqq install build-essential git lsb-release sloccount sudo vim
 
+# Non-interactive 
+RUN echo "Europe/Brussels" > /etc/timezone
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yqq tzdata
+
 # Config parameters
 ARG SANCUS_SECURITY=64
 ARG SANCUS_KEY=deadbeefcafebabe
 WORKDIR sancus
 
-# Non-interactive 
-RUN echo "Europe/Brussels" > /etc/timezone
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -yqq tzdata
-
 # Build and install latest Sancus toolchain
 RUN git clone https://github.com/sancus-pma/sancus-main.git .
 RUN make install clean \
 	SANCUS_SECURITY=$SANCUS_SECURITY SANCUS_KEY=$SANCUS_KEY
-ENV PATH=$PATH:/opt/$TI_MSPGCC/bin
 
 # Display a welcome message for interactive sessions
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' \
