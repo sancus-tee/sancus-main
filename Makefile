@@ -107,7 +107,7 @@ examples-clean:
 clean: ti-mspgcc-clean llvm-clean
 	$(RM) ti-mspgcc sancus-clang debian-deps pip-deps clang-deb-install
 	$(RM) sancus-*/build
-	$(RM) $(SANCUS_CLANG_DEB) $(TI_MSPGCC_TAR)
+	$(RM) $(LLVM_PKG_DEB) $(TI_MSPGCC_PKG_DEB)
 
 distclean: clean ti-mspgcc-distclean llvm-distclean
 	$(RM) sancus-core sancus-compiler sancus-support sancus-examples
