@@ -24,7 +24,7 @@ debian-deps:
 	$(info .. Installing system-wide Ubuntu/Debian packages)
 	$(SUDO) apt-get install -yqq \
           build-essential bzip2 wget curl git cmake vim-common expect-dev \
-          python3 python3-pip flex bison \
+          python3 python3-pip flex bison libstdc++6 \
           iverilog tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu
 	touch debian-deps
 
