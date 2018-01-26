@@ -1,5 +1,5 @@
-# Clean Ubuntu 16.04 container
-FROM ubuntu:16.04
+# Clean Ubuntu 18.04 container
+FROM ubuntu:18.04
 RUN apt-get update -yqq
 RUN apt-get -yqq install build-essential git lsb-release sloccount sudo vim
 
@@ -7,6 +7,10 @@ RUN apt-get -yqq install build-essential git lsb-release sloccount sudo vim
 ARG SANCUS_SECURITY=64
 ARG SANCUS_KEY=deadbeefcafebabe
 WORKDIR sancus
+
+# Non-interactive 
+RUN echo "Europe/Brussels" > /etc/timezone
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yqq tzdata
 
 # Build and install latest Sancus toolchain
 RUN git clone https://github.com/sancus-pma/sancus-main.git .
