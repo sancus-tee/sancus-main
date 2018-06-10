@@ -11,4 +11,6 @@ sancus-compiler/
 sancus-support/
 sancus-examples/
 
+clang-sancus
+
 *.swp

@@ -32,14 +32,27 @@ endif
 # ---------------------------------------------------------------------------
 # Package config for LLVM/CLANG
 
-LLVM_VER          = 4.0.1
+ifeq ($(OS_VERS),16.04)
+    LLVM_VER          = 4.0.0
+    LLVM_PKG_REL      = 
+else
+ifeq ($(OS_VERS),16.04)
+    LLVM_VER          = 4.0.1
+    LLVM_PKG_REL      = 2
+else
+  $(error Unsupported OS version: $(OS_VERS))
+endif
+endif
 
 LLVM_PKG          = clang-sancus
-LLVM_PKG_REL      = 2
 LLVM_PKG_SRC      = "https://distrinet.cs.kuleuven.be/software/sancus/"
 LLVM_PKG_DES      = "Clang with Sancus patches."
 
+ifeq ($(LLVM_PKG_REL),)
+LLVM_PKG_BAS      = $(LLVM_PKG)_$(LLVM_VER)_
+else
 LLVM_PKG_BAS      = $(LLVM_PKG)_$(LLVM_VER)-$(LLVM_PKG_REL)_
+endif
 ifeq ($(UNAME_M),x86_64)
 LLVM_PKG_DEB      = $(LLVM_PKG_BAS)amd64.deb
 endif
