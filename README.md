@@ -52,12 +52,13 @@ $ sudo make install_deps # default installation directory for Clang and \
                          # msp430-elf-gcc is /usr/local
 
 # 2. Clone relevant Sancus project git repositories
-$ make                   # to override default security level (64 bits), use \
-                         # SANCUS_SECURITY=128                               \
-                         # SANCUS_KEY=deadbeefcafebabec0defeeddefec8ed
+$ make
 
 # 3. Build and install Sancus toolchain
-$ sudo make install      # use SANCUS_INSTALL_PREFIX=dir to override default \
+$ sudo make install      # to override default security level (64 bits), use \
+                         # SANCUS_SECURITY=128                               \
+                         # SANCUS_KEY=deadbeefcafebabec0defeeddefec8ed       \
+                         # use SANCUS_INSTALL_PREFIX=dir to override default \
                          # installation directory /usr/local
 ```
 
