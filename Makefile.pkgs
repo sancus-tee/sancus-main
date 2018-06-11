@@ -36,7 +36,7 @@ ifeq ($(OS_VERS),16.04)
     LLVM_VER          = 4.0.0
     LLVM_PKG_REL      = 
 else
-ifeq ($(OS_VERS),16.04)
+ifeq ($(OS_VERS),18.04)
     LLVM_VER          = 4.0.1
     LLVM_PKG_REL      = 2
 else
