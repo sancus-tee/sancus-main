@@ -29,6 +29,7 @@ install_deps`:
         [Texas Instruments](http://www.ti.com/tool/msp430-gcc-opensource) (Debian package provided, see below)
 - **iverilog** >= 0.9 (if you want to use the simulator)
 - **Clang/LLVM** >= 3.4.3 (needs to be patched, Debian package provided; see below)
+- **xstools"" (see below)
 
 While developing the Sancus compiler, we found a bug in **Clang** that has not yet
 been merged upstream, and thus needs to be patched before being able to use our
@@ -39,7 +40,6 @@ want to patch and build LLVM/Clang manually, use/check `make llvm-inst` (you nee
 process and can be cleaned up afterwards).
 
 From **msp430-elf-gcc** we need the latest `binutils` for the MSP430. As for Cland, we provide these pre-packaged for Debian-based Linux distributions on AMD64 and ARMHF. Use or check `make ti-mspgcc-inst` to build msp430-elf-gcc from source.
-
 
 ## Building Instructions:
 
@@ -73,6 +73,15 @@ To remove the Sancus installation directory system-wide:
 
 ```bash
 $ sudo make uninstall
+```
+
+## XSTOOLS Installation
+
+```bash
+$ sudo pip2 install PyPubSub==3.3.0
+$ sudo pip2 install xstools
+$ sudo xstest   # to test the connected FPGA boards
+$ sudo xsload -b xula2-lx25 --flash path/to/image.mcs  # program the FPGA
 ```
 
 ## Example Programs
