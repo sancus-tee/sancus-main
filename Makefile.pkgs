@@ -32,15 +32,28 @@ endif
 # ---------------------------------------------------------------------------
 # Package config for LLVM/CLANG
 
-ifeq ($(OS_VERS),16.04)
-    LLVM_VER          = 4.0.0
-    LLVM_PKG_REL      = 
+ifeq ($(DEBIAN),1)
+  ifeq ($(OS_VERS),9.4)
+      LLVM_VER          = 4.0.1
+      LLVM_PKG_REL      = 2
+  else
+    $(error Unsupported OS version: $(OS_VERS))
+  endif
 else
-ifeq ($(OS_VERS),18.04)
-    LLVM_VER          = 4.0.1
-    LLVM_PKG_REL      = 2
+ifeq ($(UBUNTU),1)
+  ifeq ($(OS_VERS),16.04)
+      LLVM_VER          = 4.0.0
+      LLVM_PKG_REL      = 
+  else
+  ifeq ($(OS_VERS),18.04)
+      LLVM_VER          = 4.0.1
+      LLVM_PKG_REL      = 2
+  else
+    $(error Unsupported OS version: $(OS_VERS))
+  endif
+  endif
 else
-  $(error Unsupported OS version: $(OS_VERS))
+    $(error Unsupported OS: $(shell uname -v))
 endif
 endif
 
