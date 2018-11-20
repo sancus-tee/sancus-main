@@ -91,6 +91,6 @@ suite in the simulator (might take a long time since the hardware design is
 simulated at the gate-level).
 
 ```
-$ make examples-build
+$ make examples
 $ make examples-sim
 ```
