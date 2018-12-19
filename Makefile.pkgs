@@ -1,93 +1,98 @@
-
+# ---------------------------------------------------------------------------
 PKG_MAINTAINER    = 'Jan Tobias Muehlberg <jantobias.muehlberg@cs.kuleuven.be>'
 
 # ---------------------------------------------------------------------------
 # Package config for TI MSPGCC
 
-TI_MSPGCC_VER     = 6.4.0.32
-TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)_source-full
+TI_MSPGCC_VER     = 7.3.2.154
+TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)-source-full
 TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
 TI_MSPGCC_SRC_URL = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/$(TI_MSPGCC_SRC_TBZ)
-TI_MSPGCC_PREFIX  = /usr/local
 
-TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
-TI_MSPGCC_PKG_REL = 1
-TI_MSPGCC_PKG_SRC = $(TI_MSPGCC_SRC_URL)
-TI_MSPGCC_PKG_DES = "TI MSP430-GCC binutils for Sancus."
+ifeq ($(OTHER),0)
+	TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
+	TI_MSPGCC_PKG_REL = 1
+	TI_MSPGCC_PKG_SRC = $(TI_MSPGCC_SRC_URL)
+	TI_MSPGCC_PKG_DES = "TI MSP430-GCC binutils for Sancus."
 
-TI_MSPGCC_PKG_BAS = $(TI_MSPGCC_PKG)_$(TI_MSPGCC_VER)-$(TI_MSPGCC_PKG_REL)_
-ifeq ($(UNAME_M),x86_64)
-TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)amd64.deb
-endif
-ifeq ($(UNAME_M),armv7l)
-TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)armhf.deb
-endif
+	TI_MSPGCC_PKG_BAS = $(TI_MSPGCC_PKG)_$(TI_MSPGCC_VER)-$(TI_MSPGCC_PKG_REL)_
+	ifeq ($(UNAME_M),x86_64)
+	TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)amd64.deb
+	endif
+	ifeq ($(UNAME_M),armv7l)
+	TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)armhf.deb
+	endif
 
-ifndef TI_MSPGCC_PKG_DEB
-  $(error Unsupported architecture!)
-else
-  $(info TI MSPGCC package: $(TI_MSPGCC_PKG_DEB))
+	ifndef TI_MSPGCC_PKG_DEB
+		$(error Unsupported architecture!)
+	else
+		$(info TI MSPGCC package: $(TI_MSPGCC_PKG_DEB))
+	endif
 endif
 
 # ---------------------------------------------------------------------------
 # Package config for LLVM/CLANG
 
-ifeq ($(DEBIAN),1)
-  ifeq ($(OS_VERS),9.4)
-      LLVM_VER          = 4.0.1
-      LLVM_PKG_REL      = 2
-  else
-    $(error Unsupported OS version: $(OS_VERS))
-  endif
-else
-ifeq ($(UBUNTU),1)
-  ifeq ($(OS_VERS),16.04)
-      LLVM_VER          = 4.0.0
-      LLVM_PKG_REL      = 
-  else
-  ifeq ($(OS_VERS),18.04)
-      LLVM_VER          = 4.0.1
-      LLVM_PKG_REL      = 2
-  else
-    $(error Unsupported OS version: $(OS_VERS))
-  endif
-  endif
-else
-    $(error Unsupported OS: $(shell uname -v))
-endif
-endif
+ifeq ($(OTHER),0)
+	ifeq ($(DEBIAN),1)
+		ifeq ($(OS_VERS),9.4)
+			LLVM_VER     = 4.0.1
+			LLVM_PKG_REL = 2
+		else
+			$(error Unsupported OS version: $(OS_VERS))
+		endif
+	else
+	ifeq ($(UBUNTU),1)
+		ifeq ($(OS_VERS),16.04)
+			LLVM_VER     = 4.0.0
+			LLVM_PKG_REL =
+		else
+		ifeq ($(OS_VERS),18.04)
+			LLVM_VER     = 4.0.1
+			LLVM_PKG_REL = 2
+		else
+			$(error Unsupported OS version: $(OS_VERS))
+		endif
+		endif
+	else
+			$(error Unsupported OS: $(shell uname -v))
+	endif
+	endif
 
-LLVM_PKG          = clang-sancus
-LLVM_PKG_SRC      = "https://distrinet.cs.kuleuven.be/software/sancus/"
-LLVM_PKG_DES      = "Clang with Sancus patches."
+	LLVM_PKG     = clang-sancus
+	LLVM_PKG_SRC = "https://distrinet.cs.kuleuven.be/software/sancus/"
+	LLVM_PKG_DES = "Clang with Sancus patches."
 
-ifeq ($(LLVM_PKG_REL),)
-LLVM_PKG_BAS      = $(LLVM_PKG)_$(LLVM_VER)_
-else
-LLVM_PKG_BAS      = $(LLVM_PKG)_$(LLVM_VER)-$(LLVM_PKG_REL)_
-endif
-ifeq ($(UNAME_M),x86_64)
-LLVM_PKG_DEB      = $(LLVM_PKG_BAS)amd64.deb
-endif
-ifeq ($(UNAME_M),armv7l)
-LLVM_PKG_DEB = $(LLVM_PKG_BAS)armhf.deb
-endif
+	ifeq ($(LLVM_PKG_REL),)
+		LLVM_PKG_BAS = $(LLVM_PKG)_$(LLVM_VER)_
+	else
+		LLVM_PKG_BAS = $(LLVM_PKG)_$(LLVM_VER)-$(LLVM_PKG_REL)_
+	endif
+	ifeq ($(UNAME_M),x86_64)
+		LLVM_PKG_DEB = $(LLVM_PKG_BAS)amd64.deb
+	endif
+	ifeq ($(UNAME_M),armv7l)
+		LLVM_PKG_DEB = $(LLVM_PKG_BAS)armhf.deb
+	endif
 
-ifndef LLVM_PKG_DEB
-  $(error Unsupported architecture!)
-else
-  $(info LLVM/Clang package: $(LLVM_PKG_DEB))
+	ifndef LLVM_PKG_DEB
+		$(error Unsupported architecture!)
+	else
+		$(info LLVM/Clang package: $(LLVM_PKG_DEB))
+	endif
 endif
 
 # ---------------------------------------------------------------------------
 # Configure checkinstall
 
-ifeq ($(UNAME_M),armv7l)
-# Default checkinstall is buggy:
-# https://github.com/giuliomoro/checkinstall/commit/57ad1473bdfc5aadd2c921d6990e069809f442d4
-CHECKINSTALL = /usr/local/sbin/checkinstall
-else
-CHECKINSTALL = checkinstall
+ifeq ($(OTHER),0)
+	ifeq ($(UNAME_M),armv7l)
+		# Default checkinstall is buggy:
+		# https://github.com/giuliomoro/checkinstall/commit/57ad1473bdfc5aadd2c921d6990e069809f442d4
+		CHECKINSTALL = /usr/local/sbin/checkinstall
+	else
+		CHECKINSTALL = checkinstall
+	endif
 endif
 
 # ---------------------------------------------------------------------------
@@ -101,14 +106,14 @@ ti-mspgcc-build: $(TI_MSPGCC_SRC_DIR)
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  ./configure --target=msp430-elf \
 	    --enable-languages=c,c++ --disable-nls \
-	    --prefix=$(TI_MSPGCC_PREFIX) \
+	    --prefix=$(SANCUS_INSTALL_PREFIX) \
 	    --disable-sim --disable-gdb --disable-werror
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  $(MAKE) -j 2
 
 ti-mspgcc-deb: ti-mspgcc-build
-	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/msp430-elf/lib
-	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/share/man
+	$(SUDO) mkdir -p $(SANCUS_INSTALL_PREFIX)/msp430-elf/lib
+	$(SUDO) mkdir -p $(SANCUS_INSTALL_PREFIX)/share/man
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  echo $(TI_MSPGCC_PKG_DES) >description-pak && \
 	  $(SUDO) $(CHECKINSTALL) -y -D --install=no --backup=no \
@@ -121,7 +126,7 @@ ti-mspgcc-deb: ti-mspgcc-build
 	  --deldoc --deldesc --delspec
 
 ti-mspgcc-inst: ti-mspgcc-build
-	$(SUDO) mkdir -p $(TI_MSPGCC_PREFIX)/msp430-elf/lib
+	$(SUDO) mkdir -p $(SANCUS_INSTALL_PREFIX)/msp430-elf/lib
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  $(SUDO) $(MAKE) install
 
@@ -146,18 +151,10 @@ clang_unpatch:
 	cd clang && \
 	  patch -p1 -R < ../clang.patch
 
-LLVM_BUILD_FLAGS =  -DLLVM_TARGETS_TO_BUILD="host;MSP430" \
-		    -DLLVM_TARGET_ARCH=host \
-		    -DCMAKE_BUILD_TYPE=Release \
-                    -DCMAKE_INSTALL_PREFIX=$(SANCUS_INSTALL_PREFIX)
-
-ifeq ($(UNAME_M),armv7l)
-# This is meant to work for raspbian/debian Stretch; Release buid saves us
-# a lot of memory during compilation and linking. Essentially, you can't
-# build it without.
-LLVM_BUILD_FLAGS += -DCMAKE_BUILD_TYPE=Release
-endif
-
+LLVM_BUILD_FLAGS = -DLLVM_TARGETS_TO_BUILD="host;MSP430" \
+                   -DLLVM_TARGET_ARCH=host \
+                   -DCMAKE_BUILD_TYPE=Release \
+                   -DCMAKE_INSTALL_PREFIX=$(SANCUS_INSTALL_PREFIX)
 
 llvm-build: clang_patch
 	$(info .. Building and installing patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
@@ -191,4 +188,3 @@ llvm-clean:
 
 llvm-distclean: llvm-clean
 	rm -f $(LLVM_PKG_DEB)
-
