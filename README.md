@@ -29,7 +29,7 @@ install_deps`:
         [Texas Instruments](http://www.ti.com/tool/msp430-gcc-opensource) (Debian package provided, see below)
 - **iverilog** >= 0.9 (if you want to use the simulator)
 - **Clang/LLVM** >= 3.4.3 (needs to be patched, Debian package provided; see below)
-- **xstools"" (see below)
+- **xstools** (see below)
 
 While developing the Sancus compiler, we found a bug in **Clang** that has not yet
 been merged upstream, and thus needs to be patched before being able to use our
@@ -44,7 +44,7 @@ From **msp430-elf-gcc** we need the latest `binutils` for the MSP430. As for Cla
 ## Building Instructions:
 
 ```bash
-$ git clone git@github.com:sancus-pma/sancus-main.git
+$ git clone https://github.com/sancus-pma/sancus-main.git
 $ cd sancus-main
 
 # 1. Install prerequisites
@@ -60,19 +60,6 @@ $ sudo make install      # to override default security level (64 bits), use \
                          # SANCUS_KEY=deadbeefcafebabec0defeeddefec8ed       \
                          # use SANCUS_INSTALL_PREFIX=dir to override default \
                          # installation directory /usr/local
-```
-
-To remove temporary files:
-
-```bash
-$ make clean
-$ make distclean
-```
-
-To remove the Sancus installation directory system-wide:
-
-```bash
-$ sudo make uninstall
 ```
 
 ## XSTOOLS Installation
@@ -93,4 +80,24 @@ simulated at the gate-level).
 ```
 $ make examples
 $ make examples-sim
+```
+
+## Cleanup and Uninstall
+
+To remove temporary files:
+
+```bash
+$ sudo make clean
+```
+
+To remove temporary files, including all source code and example programs:
+
+```bash
+$ sudo make distclean
+```
+
+To remove the Sancus installation directory system-wide:
+
+```bash
+$ sudo make uninstall
 ```
