@@ -32,7 +32,7 @@ debian-deps:
 # Python3 PIP packages
 pip-deps: debian-deps
 	$(info .. Installing system-wide Python3 PIP packages)
-	pip3 install pyelftools \
+	python3 -m pip install pyelftools \
           && printf "import elftools\nprint(elftools)" | python3
 	touch pip-deps
 
