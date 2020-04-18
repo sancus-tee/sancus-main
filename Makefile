@@ -4,8 +4,12 @@ WGET    = wget
 RM      = rm -Rf
 CMAKE   = $(SET_ENV) cmake
 MAKE    = $(SET_ENV) make
-SUDO    = sudo
 
+ifeq ($(NO_SUDO),0)
+    SUDO    = sudo
+else
+    SUDO    =
+endif
 
 # ---------------------------------------------------------------------------
 # Main installation targets
