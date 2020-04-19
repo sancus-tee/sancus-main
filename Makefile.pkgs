@@ -10,89 +10,89 @@ TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
 TI_MSPGCC_SRC_URL = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/$(TI_MSPGCC_SRC_TBZ)
 
 ifeq ($(OTHER),0)
-	TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
-	TI_MSPGCC_PKG_REL = 1
-	TI_MSPGCC_PKG_SRC = $(TI_MSPGCC_SRC_URL)
-	TI_MSPGCC_PKG_DES = "TI MSP430-GCC binutils for Sancus."
-
-	TI_MSPGCC_PKG_BAS = $(TI_MSPGCC_PKG)_$(TI_MSPGCC_VER)-$(TI_MSPGCC_PKG_REL)_
-	ifeq ($(UNAME_M),x86_64)
-	TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)amd64.deb
-	endif
-	ifeq ($(UNAME_M),armv7l)
-	TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)armhf.deb
-	endif
-
-	ifndef TI_MSPGCC_PKG_DEB
-		$(error Unsupported architecture!)
-	else
-		$(info TI MSPGCC package: $(TI_MSPGCC_PKG_DEB))
-	endif
+    TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
+    TI_MSPGCC_PKG_REL = 1
+    TI_MSPGCC_PKG_SRC = $(TI_MSPGCC_SRC_URL)
+    TI_MSPGCC_PKG_DES = "TI MSP430-GCC binutils for Sancus."
+    
+    TI_MSPGCC_PKG_BAS = $(TI_MSPGCC_PKG)_$(TI_MSPGCC_VER)-$(TI_MSPGCC_PKG_REL)_
+    ifeq ($(UNAME_M),x86_64)
+    TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)amd64.deb
+    endif
+    ifeq ($(UNAME_M),armv7l)
+    TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)armhf.deb
+    endif
+    
+    ifndef TI_MSPGCC_PKG_DEB
+     $(error Unsupported architecture!)
+    else
+     $(info TI MSPGCC package: $(TI_MSPGCC_PKG_DEB))
+    endif
 endif
 
 # ---------------------------------------------------------------------------
 # Package config for LLVM/CLANG
 
 ifeq ($(OTHER),0)
-	ifeq ($(DEBIAN),1)
-		ifeq ($(OS_VERS),9.4)
-			LLVM_VER     = 4.0.1
-			LLVM_PKG_REL = 2
-		else
-			$(error Unsupported OS version: $(OS_VERS))
-		endif
-	else
-	ifeq ($(UBUNTU),1)
-		ifeq ($(OS_VERS),16.04)
-			LLVM_VER     = 4.0.0
-			LLVM_PKG_REL =
-		else
-		ifeq ($(OS_VERS),18.04)
-			LLVM_VER     = 4.0.1
-			LLVM_PKG_REL = 2
-		else
-			$(error Unsupported OS version: $(OS_VERS))
-		endif
-		endif
-	else
-			$(error Unsupported OS: $(shell uname -v))
-	endif
-	endif
+    ifeq ($(DEBIAN),1)
+        ifeq ($(OS_VERS),9.4)
+            LLVM_VER     = 4.0.1
+            LLVM_PKG_REL = 2
+        else
+            $(error Unsupported OS version: $(OS_VERS))
+        endif
+    else
+    ifeq ($(UBUNTU),1)
+        ifeq ($(OS_VERS),16.04)
+            LLVM_VER     = 4.0.0
+            LLVM_PKG_REL =
+        else
+        ifeq ($(OS_VERS),18.04)
+            LLVM_VER     = 4.0.1
+            LLVM_PKG_REL = 2
+        else
+            $(error Unsupported OS version: $(OS_VERS))
+        endif
+        endif
+    else
+            $(error Unsupported OS: $(shell uname -v))
+    endif
+    endif
 
-	LLVM_PKG     = clang-sancus
-	LLVM_PKG_SRC = "https://distrinet.cs.kuleuven.be/software/sancus/"
-	LLVM_PKG_DES = "Clang with Sancus patches."
+    LLVM_PKG     = clang-sancus
+    LLVM_PKG_SRC = "https://distrinet.cs.kuleuven.be/software/sancus/"
+    LLVM_PKG_DES = "Clang with Sancus patches."
 
-	ifeq ($(LLVM_PKG_REL),)
-		LLVM_PKG_BAS = $(LLVM_PKG)_$(LLVM_VER)_
-	else
-		LLVM_PKG_BAS = $(LLVM_PKG)_$(LLVM_VER)-$(LLVM_PKG_REL)_
-	endif
-	ifeq ($(UNAME_M),x86_64)
-		LLVM_PKG_DEB = $(LLVM_PKG_BAS)amd64.deb
-	endif
-	ifeq ($(UNAME_M),armv7l)
-		LLVM_PKG_DEB = $(LLVM_PKG_BAS)armhf.deb
-	endif
+    ifeq ($(LLVM_PKG_REL),)
+        LLVM_PKG_BAS = $(LLVM_PKG)_$(LLVM_VER)_
+    else
+        LLVM_PKG_BAS = $(LLVM_PKG)_$(LLVM_VER)-$(LLVM_PKG_REL)_
+    endif
+    ifeq ($(UNAME_M),x86_64)
+        LLVM_PKG_DEB = $(LLVM_PKG_BAS)amd64.deb
+    endif
+    ifeq ($(UNAME_M),armv7l)
+        LLVM_PKG_DEB = $(LLVM_PKG_BAS)armhf.deb
+    endif
 
-	ifndef LLVM_PKG_DEB
-		$(error Unsupported architecture!)
-	else
-		$(info LLVM/Clang package: $(LLVM_PKG_DEB))
-	endif
+    ifndef LLVM_PKG_DEB
+        $(error Unsupported architecture!)
+    else
+        $(info LLVM/Clang package: $(LLVM_PKG_DEB))
+    endif
 endif
 
 # ---------------------------------------------------------------------------
 # Configure checkinstall
 
 ifeq ($(OTHER),0)
-	ifeq ($(UNAME_M),armv7l)
-		# Default checkinstall is buggy:
-		# https://github.com/giuliomoro/checkinstall/commit/57ad1473bdfc5aadd2c921d6990e069809f442d4
-		CHECKINSTALL = /usr/local/sbin/checkinstall
-	else
-		CHECKINSTALL = checkinstall
-	endif
+    ifeq ($(UNAME_M),armv7l)
+        # Default checkinstall is buggy:
+        # https://github.com/giuliomoro/checkinstall/commit/57ad1473bdfc5aadd2c921d6990e069809f442d4
+        CHECKINSTALL = /usr/local/sbin/checkinstall
+    else
+        CHECKINSTALL = checkinstall
+    endif
 endif
 
 # ---------------------------------------------------------------------------
