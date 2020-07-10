@@ -1,6 +1,6 @@
 -include Makefile.config
 
-WGET    = wget
+WGET    = wget -nv
 RM      = rm -Rf
 CMAKE   = $(SET_ENV) cmake
 MAKE    = $(SET_ENV) make
