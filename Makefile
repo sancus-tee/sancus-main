@@ -29,7 +29,8 @@ debian-deps:
 	$(SUDO) apt-get install -yqq \
           build-essential bzip2 wget curl git cmake vim-common expect-dev \
           python3 python3-pip flex bison libstdc++6 \
-          iverilog tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu
+          iverilog tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu \
+	  verilator
 	touch debian-deps
 
 # ---------------------------------------------------------------------------
@@ -80,11 +81,17 @@ else
 	git clone git@github.com:sancus-pma/$@.git
 endif
 
+sancus-core:
+	git clone --branch verilator https://github.com/sancus-pma/$@.git
+
 %-update: sancus-%
 	cd sancus-$*/ ; git pull
 
 %-build: sancus-%
-	mkdir -p sancus-$*/build && cd sancus-$*/build && \
+	mkdir -p sancus-$*/build
+	cd sancus-$*/build &&   \
+	git submodule init &&   \
+	git submodule update && \
 	$(CMAKE) -DCMAKE_INSTALL_PREFIX=$(SANCUS_INSTALL_PREFIX) \
              -DSECURITY=$(SANCUS_SECURITY) -DMASTER_KEY=$(SANCUS_KEY) ..
 
