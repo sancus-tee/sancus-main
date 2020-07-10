@@ -10,10 +10,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -yqq tzdata
 # Config parameters
 ARG SANCUS_SECURITY=64
 ARG SANCUS_KEY=deadbeefcafebabe
+ARG SANCUS_BRANCH=master
 WORKDIR sancus
 
 # Build and install latest Sancus toolchain
-RUN git clone https://github.com/sancus-pma/sancus-main.git .
+RUN git clone --branch $SANCUS_BRANCH https://github.com/sancus-pma/sancus-main.git .
 RUN make install clean \
 	SANCUS_SECURITY=$SANCUS_SECURITY SANCUS_KEY=$SANCUS_KEY
 
