@@ -81,9 +81,6 @@ else
 	git clone git@github.com:sancus-pma/$@.git
 endif
 
-sancus-core:
-	git clone --branch verilator https://github.com/sancus-pma/$@.git
-
 %-update: sancus-%
 	cd sancus-$*/ ; git pull
 
@@ -129,4 +126,3 @@ uninstall: distclean
 	$(RM) $(SANCUS_INSTALL_PREFIX)/lib/SancusModuleCreator.so
 	$(SUDO) dpkg -r $(LLVM_PKG)
 	$(SUDO) dpkg -r $(TI_MSPGCC_PKG)
-
