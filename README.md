@@ -1,5 +1,5 @@
 # sancus-main
-[![Build Status](https://travis-ci.org/sancus-pma/sancus-examples.svg?branch=master)](https://travis-ci.org/sancus-pma/sancus-examples)
+[![Build Status](https://travis-ci.org/sancus-tee/sancus-examples.svg?branch=master)](https://travis-ci.org/sancus-tee/sancus-examples)
 
 This repository contains a build script (Makefile) to create a working
 [Sancus](https://distrinet.cs.kuleuven.be/software/sancus/) development
@@ -44,7 +44,7 @@ From **msp430-elf-gcc** we need the latest `binutils` for the MSP430. As for Cla
 ## Building Instructions:
 
 ```bash
-$ git clone https://github.com/sancus-pma/sancus-main.git
+$ git clone https://github.com/sancus-tee/sancus-main.git
 $ cd sancus-main
 
 # 1. Install prerequisites
