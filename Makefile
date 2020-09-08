@@ -5,6 +5,7 @@ RM      = rm -Rf
 CMAKE   = $(SET_ENV) cmake
 MAKE    = $(SET_ENV) make
 
+# TODO: i think this might not be working
 ifeq ($(NO_SUDO),0)
     SUDO    = sudo
 else
@@ -14,7 +15,7 @@ endif
 # ---------------------------------------------------------------------------
 # Main installation targets
 all: sancus-core sancus-compiler sancus-support sancus-examples
-install_deps: debian-deps pip-deps ti-mspgcc clang-sancus
+install_deps: debian-deps pip-deps ti-mspgcc # clang-sancus
 install: install_deps core-install compiler-install support-install sancus-examples
 test: examples-sim
 
@@ -30,7 +31,7 @@ debian-deps:
           build-essential bzip2 wget curl git cmake vim-common expect-dev \
           python3 python3-pip flex bison libstdc++6 \
           iverilog tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu \
-	  verilator
+	  verilator checkinstall
 	touch debian-deps
 
 # ---------------------------------------------------------------------------
