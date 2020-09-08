@@ -1,25 +1,25 @@
 diff --git a/clang/lib/CodeGen/CodeGenModule.cpp b/clang/lib/CodeGen/CodeGenModule.cpp
-index 3ecc87432..fa09e89a1 100644
+index a735bdd814e..6c09f9f17f4 100644
 --- a/clang/lib/CodeGen/CodeGenModule.cpp
 +++ b/clang/lib/CodeGen/CodeGenModule.cpp
-@@ -1967,6 +1967,9 @@ void CodeGenModule::SetFunctionAttributes(GlobalDecl GD, llvm::Function *F,
+@@ -1889,6 +1889,9 @@ void CodeGenModule::SetFunctionAttributes(GlobalDecl GD, llvm::Function *F,
        !CodeGenOpts.SanitizeCfiCanonicalJumpTables)
      CreateFunctionTypeMetadataForIcall(FD, F);
- 
+
 +  if (FD->hasAttr<AnnotateAttr>())
 +    AddGlobalAnnotations(FD, F);
 +
    if (getLangOpts().OpenMP && FD->hasAttr<OMPDeclareSimdDeclAttr>())
      getOpenMPRuntime().emitDeclareSimdFunction(FD, F);
- 
-@@ -2266,9 +2269,25 @@ void CodeGenModule::EmitVTablesOpportunistically() {
+
+@@ -2188,9 +2191,25 @@ void CodeGenModule::EmitVTablesOpportunistically() {
  }
- 
+
  void CodeGenModule::EmitGlobalAnnotations() {
 -  if (Annotations.empty())
 +  if (NeededAnnotations.empty())
      return;
- 
+
 +  std::vector<llvm::Constant*> Annotations;
 +
 +  for (AnnotationMap::const_iterator it = NeededAnnotations.begin(),
@@ -39,7 +39,7 @@ index 3ecc87432..fa09e89a1 100644
    // Create a new global variable for the ConstantStruct in the Module.
    llvm::Constant *Array = llvm::ConstantArray::get(llvm::ArrayType::get(
      Annotations[0]->getType(), Annotations.size()), Annotations);
-@@ -2337,9 +2356,7 @@ llvm::Constant *CodeGenModule::EmitAnnotateAttr(llvm::GlobalValue *GV,
+@@ -2259,9 +2278,7 @@ llvm::Constant *CodeGenModule::EmitAnnotateAttr(llvm::GlobalValue *GV,
  void CodeGenModule::AddGlobalAnnotations(const ValueDecl *D,
                                           llvm::GlobalValue *GV) {
    assert(D->hasAttr<AnnotateAttr>() && "no annotate attribute");
@@ -48,19 +48,19 @@ index 3ecc87432..fa09e89a1 100644
 -    Annotations.push_back(EmitAnnotateAttr(GV, I, D->getLocation()));
 +  NeededAnnotations[D] = GV;
  }
- 
+
  bool CodeGenModule::isInSanitizerBlacklist(SanitizerMask Kind,
 diff --git a/clang/lib/CodeGen/CodeGenModule.h b/clang/lib/CodeGen/CodeGenModule.h
-index 19085b582..35ac184d8 100644
+index 115e754bb39..2e5a3d625e3 100644
 --- a/clang/lib/CodeGen/CodeGenModule.h
 +++ b/clang/lib/CodeGen/CodeGenModule.h
-@@ -408,7 +408,8 @@ private:
+@@ -407,7 +407,8 @@ private:
        CPUSpecificManglings;
- 
+
    /// Global annotations.
 -  std::vector<llvm::Constant*> Annotations;
 +  typedef std::map<const ValueDecl*, llvm::WeakVH> AnnotationMap;
 +  AnnotationMap NeededAnnotations;
- 
+
    /// Map used to get unique annotation strings.
    llvm::StringMap<llvm::Constant*> AnnotationStrings;
