@@ -52,7 +52,12 @@ ifeq ($(OTHER),0)
             LLVM_VER     = 4.0.1
             LLVM_PKG_REL = 2
         else
+        ifeq ($(OS_VERS),20.04)
+            LLVM_VER     = 4.0.1
+            LLVM_PKG_REL = 2
+        else
             $(error Unsupported OS version: $(OS_VERS))
+        endif
         endif
         endif
     else
