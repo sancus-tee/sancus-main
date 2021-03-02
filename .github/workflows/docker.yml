@@ -33,8 +33,8 @@ jobs:
       - id: docker-name
         name: Generate Docker name
         uses: ./.github/workflows/scripts/docker-image-name/
-          with: 
-            security: ${{ matrix.security }}
+        with: 
+          security: ${{ matrix.security }}
 
       - name: Build Sancus Security
         run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg SANCUS_BRANCH=$GITHUB_REF --build-arg SANCUS_SECURITY=${{ matrix.security }} --build-arg SANCUS_KEY=${{ matrix.key }} .
