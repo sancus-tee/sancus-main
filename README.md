@@ -1,5 +1,5 @@
 # sancus-main
-[![Build Status](https://travis-ci.org/sancus-tee/sancus-examples.svg?branch=master)](https://travis-ci.org/sancus-tee/sancus-examples)
+[![Docker](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml/badge.svg)](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml)
 
 This repository contains a build script (Makefile) to create a working
 [Sancus](https://distrinet.cs.kuleuven.be/software/sancus/) development
