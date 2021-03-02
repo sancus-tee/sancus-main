@@ -14,7 +14,7 @@ ARG SANCUS_BRANCH=master
 WORKDIR sancus
 
 # Build and install latest Sancus toolchain
-RUN git clone --branch $SANCUS_BRANCH https://github.com/sancus-pma/sancus-main.git .
+RUN git clone --branch $SANCUS_BRANCH https://github.com/sancus-tee/sancus-main.git .
 RUN make install clean \
 	SANCUS_SECURITY=$SANCUS_SECURITY SANCUS_KEY=$SANCUS_KEY
 
