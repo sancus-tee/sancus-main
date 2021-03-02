@@ -31,8 +31,8 @@ jobs:
       - id: docker-name
         name: Generate Docker name
         uses: ./.github/workflows/scripts/docker-image-name/
-          with: 
-            security: ${{ matrix.security }}
+        with: 
+          security: ${{ matrix.security }}
 
       - name: Build Sancus Security
         run: cd docker && make build SANCUS_SECURITY=${{ matrix.security }}
