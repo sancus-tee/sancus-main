@@ -22,7 +22,9 @@ jobs:
       matrix:
         include:
           - security: 64
+            key: deadbeefcafebabe
           - security: 128
+            key: deadbeefcafebabec0defeeddefec8ed
     steps:
       # Check out repository
       - uses: actions/checkout@v2
@@ -31,11 +33,11 @@ jobs:
       - id: docker-name
         name: Generate Docker name
         uses: ./.github/workflows/scripts/docker-image-name/
-        with: 
-          security: ${{ matrix.security }}
+          with: 
+            security: ${{ matrix.security }}
 
       - name: Build Sancus Security
-        run: cd docker && make build SANCUS_SECURITY=${{ matrix.security }}
+        run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg SANCUS_BRANCH=$GITHUB_REF --build-arg SANCUS_SECURITY=${{ matrix.security }} --build-arg SANCUS_KEY=${{ matrix.key }} .
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
