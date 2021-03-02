@@ -1,0 +1,46 @@
+name: Docker
+
+on:
+  # Run on pushes to master
+  push:
+    branches:
+      - master
+  # Run on pull requests (automatically uses PR in docker name)
+  pull_request:
+  # Also run on a schedule
+  schedule:
+    - cron: '0 0 1 */1 *'
+
+jobs:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+
+  # Two identical jobs to create both a 64bit and 128bit security docker image
+  push-image:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - security: 64
+          - security: 128
+    steps:
+      # Check out repository
+      - uses: actions/checkout@v2
+
+      # Retrieves the name of the docker image we want to use
+      - id: docker-name
+        name: Generate Docker name
+        uses: ./.github/workflows/scripts/docker-image-name/
+          with: 
+            security: ${{ matrix.security }}
+
+      - name: Build Sancus Security
+        run: cd docker && make build SANCUS_SECURITY=${{ matrix.security }}
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          docker tag ${{ steps.docker-name.outputs.image-name }} ${{ steps.docker-name.outputs.image-id }}:${{ steps.docker-name.outputs.image-version }}
+          docker push ${{ steps.docker-name.outputs.image-id }}:${{ steps.docker-name.outputs.image-version }}
