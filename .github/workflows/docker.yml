@@ -17,33 +17,33 @@ jobs:
 
   # Two identical jobs to create both a 64bit and 128bit security docker image
   push-image:
-  name: Push Docker image (${{ matrix.security }} bit version)
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      include:
-        - security: 64
-          key: deadbeefcafebabe
-        - security: 128
-          key: deadbeefcafebabec0defeeddefec8ed
-  steps:
-    # Check out repository
-    - uses: actions/checkout@v2
+    name: Push Docker image (${{ matrix.security }} bit version)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - security: 64
+            key: deadbeefcafebabe
+          - security: 128
+            key: deadbeefcafebabec0defeeddefec8ed
+    steps:
+      # Check out repository
+      - uses: actions/checkout@v2
 
-    # Retrieves the name of the docker image we want to use
-    - id: docker-name
-      name: Generate Docker name
-      uses: ./.github/workflows/scripts/docker-image-name/
-      with: 
-        security: ${{ matrix.security }}
+      # Retrieves the name of the docker image we want to use
+      - id: docker-name
+        name: Generate Docker name
+        uses: ./.github/workflows/scripts/docker-image-name/
+        with: 
+          security: ${{ matrix.security }}
 
-    - name: Build Sancus Security
-      run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg SANCUS_BRANCH=master --build-arg SANCUS_SECURITY=${{ matrix.security }} --build-arg SANCUS_KEY=${{ matrix.key }} .
+      - name: Build Sancus Security
+        run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg SANCUS_BRANCH=master --build-arg SANCUS_SECURITY=${{ matrix.security }} --build-arg SANCUS_KEY=${{ matrix.key }} .
 
-    - name: Log into registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
-    - name: Push image
-      run: |
-        docker tag ${{ steps.docker-name.outputs.image-name }} ${{ steps.docker-name.outputs.image-id }}:${{ steps.docker-name.outputs.image-version }}
-        docker push ${{ steps.docker-name.outputs.image-id }}:${{ steps.docker-name.outputs.image-version }}
+      - name: Push image
+        run: |
+          docker tag ${{ steps.docker-name.outputs.image-name }} ${{ steps.docker-name.outputs.image-id }}:${{ steps.docker-name.outputs.image-version }}
+          docker push ${{ steps.docker-name.outputs.image-id }}:${{ steps.docker-name.outputs.image-version }}
