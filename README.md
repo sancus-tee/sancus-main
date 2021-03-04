@@ -1,5 +1,6 @@
 # sancus-main
 [![Docker](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml/badge.svg)](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml)
+[![Sancus examples](https://github.com/sancus-tee/sancus-examples/actions/workflows/run-examples.yml/badge.svg)](https://github.com/sancus-tee/sancus-examples/actions/workflows/run-examples.yml)
 
 This repository contains a build script (Makefile) to create a working
 [Sancus](https://distrinet.cs.kuleuven.be/software/sancus/) development
