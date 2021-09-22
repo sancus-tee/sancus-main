@@ -7,9 +7,9 @@ on:
       - master
   # Run on pull requests (automatically uses PR in docker name)
   pull_request:
-  # Also run on a schedule
+  # trigger a cron job every monday at 6am
   schedule:
-    - cron: '0 0 1 */1 *'
+    - cron: '00 06 * * MON'
 
 jobs:
   # Push image to GitHub Packages.
