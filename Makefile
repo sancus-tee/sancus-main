@@ -23,14 +23,14 @@ update: core-update compiler-update support-update examples-update
 build: core-build compiler-build support-build
 
 # ---------------------------------------------------------------------------
-# apt-get prerequisites as provided by Ubuntu 16.04 LTS
+# apt-get prerequisites as provided by Ubuntu 18.04/20.04 LTS
 debian-deps:
 	$(info .. Installing system-wide Ubuntu/Debian packages)
 	$(SUDO) apt-get install -yqq \
           build-essential bzip2 wget curl git cmake vim-common expect-dev \
           python3 python3-pip flex bison libstdc++6 \
           iverilog tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu \
-	  verilator
+	  verilator libtinfo5
 	touch debian-deps
 
 # ---------------------------------------------------------------------------
