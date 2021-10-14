@@ -11,12 +11,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -yqq tzdata
 ARG SANCUS_SECURITY=64
 ARG SANCUS_KEY=deadbeefcafebabe
 ARG SANCUS_BRANCH=master
+ARG ATOMICITY_MONITOR=0
 WORKDIR sancus
 
 # Build and install latest Sancus toolchain
 RUN git clone --branch $SANCUS_BRANCH https://github.com/sancus-tee/sancus-main.git .
 RUN make install clean \
-	SANCUS_SECURITY=$SANCUS_SECURITY SANCUS_KEY=$SANCUS_KEY
+	SANCUS_SECURITY=$SANCUS_SECURITY SANCUS_KEY=$SANCUS_KEY ATOMICITY_MONITOR=$ATOMICITY_MONITOR
 
 # Display a welcome message for interactive sessions
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' \

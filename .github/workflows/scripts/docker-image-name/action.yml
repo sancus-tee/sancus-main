@@ -5,6 +5,10 @@ inputs:
     description: 'Used security (64 or 128)'
     required: false
     default: 64
+  availability:
+    description: 'Version with availability guarantees enabled or not'
+    required: false
+    default: 0
 outputs:
   image-name:
     description: "Docker image name"
@@ -23,6 +27,7 @@ runs:
         # since the sancus build system always creates sancus-devel, we only attach the security to the ID
         IMAGE_NAME=sancus-devel
         IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME-${{ inputs.security }}
+        [ "${{ inputs.availability }}" == "1" ] && IMAGE_ID=$IMAGE_ID-aion
         # Change all uppercase to lowercase
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         # Strip git ref prefix from version
