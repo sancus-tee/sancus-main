@@ -17,7 +17,7 @@ jobs:
 
   # Two identical jobs to create both a 64bit and 128bit security docker image
   push-image:
-    name: Push Docker image (${{ matrix.security }} bit version)
+    name: Push Docker image (${{ matrix.security }} bit version, Aion=${{ matrix.availability }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
