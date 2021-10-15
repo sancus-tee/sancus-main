@@ -38,7 +38,7 @@ debian-deps:
 pip-deps: debian-deps
 	$(info .. Installing system-wide Python3 PIP packages)
 	python3 -m pip install pyelftools pyyaml \
-          && printf "import elftools\nprint(elftools)" | python3
+          && printf "import elftools\nprint(elftools)" | python3 \
           && printf "import yaml\nprint(yaml)" | python3
 	touch pip-deps
 
