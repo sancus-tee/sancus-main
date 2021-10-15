@@ -30,7 +30,7 @@ debian-deps:
           build-essential bzip2 wget curl git cmake vim-common expect-dev \
           python3 python3-pip flex bison libstdc++6 \
           iverilog tk binutils-msp430 gcc-msp430 msp430-libc msp430mcu \
-	  verilator libtinfo5
+	 	  verilator libtinfo5 unzip
 	touch debian-deps
 
 # ---------------------------------------------------------------------------
@@ -39,6 +39,7 @@ pip-deps: debian-deps
 	$(info .. Installing system-wide Python3 PIP packages)
 	python3 -m pip install pyelftools pyyaml \
           && printf "import elftools\nprint(elftools)" | python3
+          && printf "import yaml\nprint(yaml)" | python3
 	touch pip-deps
 
 # ---------------------------------------------------------------------------
@@ -90,7 +91,7 @@ endif
 	git submodule init &&   \
 	git submodule update && \
 	$(CMAKE) -DCMAKE_INSTALL_PREFIX=$(SANCUS_INSTALL_PREFIX) \
-             -DSECURITY=$(SANCUS_SECURITY) -DMASTER_KEY=$(SANCUS_KEY) ..
+             -DSECURITY=$(SANCUS_SECURITY) -DMASTER_KEY=$(SANCUS_KEY) -DATOMICITY_MONITOR=$(ATOMICITY_MONITOR) ..
 
 %-install: %-build
 	$(info .. Installing sancus-$* to $(SANCUS_INSTALL_PREFIX))
