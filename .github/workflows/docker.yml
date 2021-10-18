@@ -17,20 +17,18 @@ jobs:
 
   # Two identical jobs to create both a 64bit and 128bit security docker image
   push-image:
-    name: Push Docker image (${{ matrix.security }} bit version, Aion=${{ matrix.availability }})
+    name: Push Docker image ${{ matrix.core }}-${{ matrix.security }} 
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        core: [sancus, aion]
+        security: [64, 128]
         include:
           - security: 64
             key: deadbeefcafebabe
-            availability: 0
           - security: 128
             key: deadbeefcafebabec0defeeddefec8ed
-            availability: 0
-          - security: 64
-            key: deadbeefcafebabe
-            availability: 1
+
     steps:
       # Check out repository
       - uses: actions/checkout@v2
@@ -41,10 +39,10 @@ jobs:
         uses: ./.github/workflows/scripts/docker-image-name/
         with: 
           security: ${{ matrix.security }}
-          availability: ${{ matrix.availability }}
+          core: ${{ matrix.core }}
 
       - name: Build Sancus Security
-        run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg SANCUS_BRANCH=master --build-arg SANCUS_SECURITY=${{ matrix.security }} --build-arg SANCUS_KEY=${{ matrix.key }} --build-arg ATOMICITY_MONITOR=${{ matrix.availability }} .
+        run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg SANCUS_BRANCH=master --build-arg SANCUS_SECURITY=${{ matrix.security }} --build-arg SANCUS_KEY=${{ matrix.key }} --build-arg ATOMICITY_MONITOR=${{ matrix.core == aion }} .
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
