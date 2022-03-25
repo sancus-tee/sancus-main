@@ -1,4 +1,5 @@
 # sancus-main
+
 [![Docker](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml/badge.svg)](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml)
 [![Sancus examples](https://github.com/sancus-tee/sancus-examples/actions/workflows/run-examples.yml/badge.svg)](https://github.com/sancus-tee/sancus-examples/actions/workflows/run-examples.yml)
 
@@ -14,7 +15,42 @@ to automatically build an Ubuntu 18.04-based 'sancus-devel' container. Simply
 execute `make docker` to build and run the Docker container, or see the
 [docker](docker) subdirectory for detailed instructions.
 
-## Requirements and Dependencies:
+## Quickstart
+
+If you do not care about modifying the Sancus code itself but just wish to work with the existing toolchain, using the Docker images may already be enough for you!
+
+```bash
+# Pull latest Sancus image for 128 bit security
+$ docker pull ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+# Run Docker interactively
+$ docker run -it ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+# Run Docker and attach directory ~/project into the Docker file system
+$ docker run -it -v ~/project:/sancus/project ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+# Run Docker and attach above directory but also forward USB UART0 to the container
+$ docker run -it -v ~/project:/sancus/project --device /dev/ttyUSB0 ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+```
+
+Inside docker, you may then wish to first load the FPGA image on the board. Download the latest released flash files from [Sancus core](https://github.com/sancus-tee/sancus-core/releases/latest) and flash them on the board.
+```bash
+# Flash FPGA image file
+$ xsload --flash <mcs file>
+# !! Manually press the reset button on the board once to reset it
+
+# Now in a terminal outside of the Docker container, open a screen session to see the future output on the UART 1:
+$ screen /dev/ttyUSB1 115200
+
+# Now you are ready to load the elf file from inside the docker via UART0:
+# The docker image comes with sancus-examples pulled.
+$ cd /sancus/sancus-examples
+$ cd hello-world
+$ make load SANCUS_SECURITY=128
+# Or alternatively, to perform these steps manually:
+$ make clean
+$ make all SANCUS_SECURITY=128
+$ sancus-loader -device /dev/ttyUSB0 main.elf
+```
+
+## Requirements and Dependencies
 
 Note: The build script was developed to work on a fresh Ubuntu 18.04/20.04
 LTS installation, but it should be fairly straightforward to port to other
