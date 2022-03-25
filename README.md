@@ -21,13 +21,13 @@ If you do not care about modifying the Sancus code itself but just wish to work 
 
 ```bash
 # Pull latest Sancus image for 128 bit security
-$ docker pull ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+$ docker pull ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
 # Run Docker interactively
-$ docker run -it ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+$ docker run -it ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
 # Run Docker and attach directory ~/project into the Docker file system
-$ docker run -it -v ~/project:/sancus/project ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+$ docker run -it -v ~/project:/sancus/project ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
 # Run Docker and attach above directory but also forward USB UART0 to the container
-$ docker run -it -v ~/project:/sancus/project --device /dev/ttyUSB0 ghcr.io/fritzalder/sancus-main/sancus-devel-128:latest
+$ docker run -it -v ~/project:/sancus/project --device /dev/ttyUSB0 ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
 ```
 
 Inside docker, you may then wish to first load the FPGA image on the board. Download the latest released flash files from [Sancus core](https://github.com/sancus-tee/sancus-core/releases/latest) and flash them on the board.
