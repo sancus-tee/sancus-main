@@ -3,34 +3,83 @@
 [![Docker](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml/badge.svg)](https://github.com/sancus-tee/sancus-main/actions/workflows/docker.yml)
 [![Sancus examples](https://github.com/sancus-tee/sancus-examples/actions/workflows/run-examples.yml/badge.svg)](https://github.com/sancus-tee/sancus-examples/actions/workflows/run-examples.yml)
 
-This repository contains a build script (Makefile) to create a working
+This top-level repository contains a build script (Makefile) and Docker setup to create a working
 [Sancus](https://distrinet.cs.kuleuven.be/software/sancus/) development
 environment by resolving system dependencies, and installing the latest
 sub-projects. The resulting Sancus distribution offers a complete development
 environment, including simulator, compiler/toolchain, support libraries, and
 example programs.
 
-To get started quickly, we also provide a Docker script that uses the Makefile
-to automatically build an Ubuntu 18.04-based 'sancus-devel' container. Simply
-execute `make docker` to build and run the Docker container, or see the
-[docker](docker) subdirectory for detailed instructions.
+## Quickstart with Docker
 
-## Quickstart
+To get started quickly, we provide prebuilt `sancus-devel` Docker containers
+with the latest, "nightly" Sancus toolchain. This is the easiest way to get
+started immediately if you do not care about modifying the Sancus core itself
+but just wish to work with the existing toolchain. The `sancus-devel`
+containers should always provide you with a working, out-of-the-box toolchain
+that has been tested against the latest
+[CI tests](https://github.com/sancus-tee/sancus-examples/actions/workflows/run-examples.yml).
 
-If you do not care about modifying the Sancus code itself but just wish to work with the existing toolchain, using the Docker images may already be enough for you!
+### Install docker
+
+Quick installation guide (Debian GNU/Linux and Ubuntu), loosely based on
+https://docs.docker.com/get-started/
+
+1. Install docker
+
+    ```bash
+    # apt-get install docker.io
+    ```
+
+2. Configure user access
+
+    ```bash
+    # usermod -aG docker $(whoami) # add users to docker group, then re-login.
+    ```
+
+3. Check your docker installation
+
+    ```bash
+    $ docker run hello-world
+    [...]
+    This message shows that your installation appears to be working correctly.
+    [...]
+    ```
+
+### Docker run Sancus simulator
+
+Proceed as follows to pull the latest `sancus-devel` container and run example
+programs or start your own experiments in the `sancus-sim` cycle-accurate
+Verilog simulator:
 
 ```bash
 # Pull latest Sancus image for 128 bit security
 $ docker pull ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
+
 # Run Docker interactively
 $ docker run -it ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
-# Run Docker and attach directory ~/project into the Docker file system
+# Alternatively, run Docker as follows to attach directory ~/project into the Docker file system
 $ docker run -it -v ~/project:/sancus/project ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
+
+# Try simulating one of the examples
+$ cd /sancus/sancus-examples/hello-world/
+$ make sim
+```
+
+### Docker run Sancus FPGA
+
+First start Docker with access to the `/dev/ttyUSB0` FPGA uplink:
+
+```bash
 # Run Docker and attach above directory but also forward USB UART0 to the container
 $ docker run -it -v ~/project:/sancus/project --device /dev/ttyUSB0 ghcr.io/sancus-tee/sancus-main/sancus-devel-128:latest
 ```
 
-Inside docker, you may then wish to first load the FPGA image on the board. Download the latest released flash files from [Sancus core](https://github.com/sancus-tee/sancus-core/releases/latest) and flash them on the board.
+Next, to load the FPGA image on the board from within Docker.  Download the
+latest released flash files from
+[sancus-core](https://github.com/sancus-tee/sancus-core/releases/latest) and
+flash them onto the board.
+
 ```bash
 # Flash FPGA image file
 $ xsload --flash <mcs file>
@@ -44,13 +93,25 @@ $ screen /dev/ttyUSB1 115200
 $ cd /sancus/sancus-examples
 $ cd hello-world
 $ make load SANCUS_SECURITY=128
+
 # Or alternatively, to perform these steps manually:
 $ make clean
 $ make all SANCUS_SECURITY=128
 $ sancus-loader -device /dev/ttyUSB0 main.elf
 ```
 
-## Requirements and Dependencies
+## Building the Sancus toolchain from scratch
+
+**Note (reproducible build)** The nightly `sancus-devel` containers are built
+automatically by our CI scripts and subsequently pushed to our [GitHub packages
+page](https://github.com/orgs/sancus-tee/packages). In case you want to build
+Docker images yourself, or reproduce our builds, we provide the Docker script
+that uses the Makefile to automatically build an Ubuntu 18.04-based
+'sancus-devel' container. Simply execute `make docker` to build and run the
+Docker container, or see the [docker](docker) subdirectory for detailed
+instructions.
+
+### Requirements and Dependencies
 
 Note: The build script was developed to work on a fresh Ubuntu 18.04/20.04
 LTS installation, but it should be fairly straightforward to port to other
@@ -78,7 +139,7 @@ process and can be cleaned up afterwards).
 
 From **msp430-elf-gcc** we need the latest `binutils` for the MSP430. As for Cland, we provide these pre-packaged for Debian-based Linux distributions on AMD64 and ARMHF. Use or check `make ti-mspgcc-inst` to build msp430-elf-gcc from source.
 
-## Building Instructions:
+### Building Instructions:
 
 ```bash
 $ git clone https://github.com/sancus-tee/sancus-main.git
@@ -99,7 +160,7 @@ $ sudo make install      # to override default security level (64 bits), use \
                          # installation directory /usr/local
 ```
 
-## XSTOOLS Installation
+### XSTOOLS Installation
 
 ```bash
 $ sudo pip2 install PyPubSub==3.3.0
@@ -108,7 +169,7 @@ $ sudo xstest   # to test the connected FPGA boards
 $ sudo xsload -b xula2-lx25 --flash path/to/image.mcs  # program the FPGA
 ```
 
-## Example Programs
+### Example Programs
 
 To test your newly installed Sancus distribution, run the example programs/test
 suite in the simulator (might take a long time since the hardware design is
@@ -119,7 +180,7 @@ $ make examples
 $ make examples-sim
 ```
 
-## Cleanup and Uninstall
+### Cleanup and Uninstall
 
 To remove temporary files:
 
