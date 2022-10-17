@@ -2,36 +2,6 @@
 PKG_MAINTAINER    = 'Jan Tobias Muehlberg <jantobias.muehlberg@cs.kuleuven.be>'
 
 # ---------------------------------------------------------------------------
-# Package config for TI MSPGCC
-
-TI_MSPGCC_VER     = 9.3.1.11
-TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)-source-full
-
-TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
-TI_MSPGCC_SRC_URL = https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-LlCjWuAbzH/9.3.1.2/$(TI_MSPGCC_SRC_TBZ)
-
-ifeq ($(OTHER),0)
-    TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
-    TI_MSPGCC_PKG_REL = 1
-    TI_MSPGCC_PKG_SRC = $(TI_MSPGCC_SRC_URL)
-    TI_MSPGCC_PKG_DES = "TI MSP430-GCC binutils for Sancus."
-    
-    TI_MSPGCC_PKG_BAS = $(TI_MSPGCC_PKG)_$(TI_MSPGCC_VER)-$(TI_MSPGCC_PKG_REL)_
-    ifeq ($(UNAME_M),x86_64)
-    TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)amd64.deb
-    endif
-    ifeq ($(UNAME_M),armv7l)
-    TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)armhf.deb
-    endif
-    
-    ifndef TI_MSPGCC_PKG_DEB
-     $(error Unsupported architecture!)
-    else
-     $(info TI MSPGCC package: $(TI_MSPGCC_PKG_DEB))
-    endif
-endif
-
-# ---------------------------------------------------------------------------
 # Package config for LLVM/CLANG
 
 ifeq ($(OTHER),0)
@@ -39,26 +9,31 @@ ifeq ($(OTHER),0)
         ifeq ($(OS_VERS),9.4)
             LLVM_VER     = 4.0.1
             LLVM_PKG_REL = 2
+            TI_MSPGCC_VER = 6.4.0.32
         else
             $(error Unsupported OS version: $(OS_VERS))
         endif
     else
     ifeq ($(UBUNTU),1)
         ifeq ($(OS_VERS),16.04)
-            LLVM_VER     = 4.0.0
-            LLVM_PKG_REL =
+            LLVM_VER      = 4.0.0
+            LLVM_PKG_REL  =
+            TI_MSPGCC_VER = 6.4.0.32
         else
         ifeq ($(OS_VERS),18.04)
-            LLVM_VER     = 4.0.1
-            LLVM_PKG_REL = 2
+            LLVM_VER      = 4.0.1
+            LLVM_PKG_REL  = 2
+            TI_MSPGCC_VER = 6.4.0.32
         else
         ifeq ($(OS_VERS),20.04)
-            LLVM_VER     = 4.0.1
-            LLVM_PKG_REL = 2
+            LLVM_VER      = 4.0.1
+            LLVM_PKG_REL  = 2
+            TI_MSPGCC_VER = 6.4.0.32
         else
         ifeq ($(OS_VERS),22.04)
-            LLVM_VER     = 4.0.1
-            LLVM_PKG_REL = 2
+            LLVM_VER      = 4.0.1
+            LLVM_PKG_REL  = 2
+            TI_MSPGCC_VER = 9.3.1.11
         else
             $(error Unsupported OS version: $(OS_VERS))
         endif
@@ -90,6 +65,37 @@ ifeq ($(OTHER),0)
         $(error Unsupported architecture!)
     else
         $(info LLVM/Clang package: $(LLVM_PKG_DEB))
+    endif
+else
+    TI_MSPGCC_VER = 9.3.1.11
+endif
+
+# ---------------------------------------------------------------------------
+# Package config for TI MSPGCC
+
+TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)-source-full
+
+TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
+TI_MSPGCC_SRC_URL = https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-LlCjWuAbzH/9.3.1.2/$(TI_MSPGCC_SRC_TBZ)
+
+ifeq ($(OTHER),0)
+    TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
+    TI_MSPGCC_PKG_REL = 1
+    TI_MSPGCC_PKG_SRC = $(TI_MSPGCC_SRC_URL)
+    TI_MSPGCC_PKG_DES = "TI MSP430-GCC binutils for Sancus."
+    
+    TI_MSPGCC_PKG_BAS = $(TI_MSPGCC_PKG)_$(TI_MSPGCC_VER)-$(TI_MSPGCC_PKG_REL)_
+    ifeq ($(UNAME_M),x86_64)
+    TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)amd64.deb
+    endif
+    ifeq ($(UNAME_M),armv7l)
+    TI_MSPGCC_PKG_DEB = $(TI_MSPGCC_PKG_BAS)armhf.deb
+    endif
+    
+    ifndef TI_MSPGCC_PKG_DEB
+     $(error Unsupported architecture!)
+    else
+     $(info TI MSPGCC package: $(TI_MSPGCC_PKG_DEB))
     endif
 endif
 
