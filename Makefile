@@ -5,10 +5,10 @@ RM      = rm -Rf
 CMAKE   = $(SET_ENV) cmake
 MAKE    = $(SET_ENV) make
 
-ifeq ($(NO_SUDO),0)
-    SUDO    = sudo
-else
+ifeq ($(NO_SUDO),1)
     SUDO    =
+else
+    SUDO    = sudo
 endif
 
 # ---------------------------------------------------------------------------

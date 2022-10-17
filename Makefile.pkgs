@@ -4,11 +4,11 @@ PKG_MAINTAINER    = 'Jan Tobias Muehlberg <jantobias.muehlberg@cs.kuleuven.be>'
 # ---------------------------------------------------------------------------
 # Package config for TI MSPGCC
 
-TI_MSPGCC_VER     = 6.4.0.32
-TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)_source-full
+TI_MSPGCC_VER     = 9.3.1.11
+TI_MSPGCC_SRC_DIR = msp430-gcc-$(TI_MSPGCC_VER)-source-full
 
 TI_MSPGCC_SRC_TBZ = $(TI_MSPGCC_SRC_DIR).tar.bz2
-TI_MSPGCC_SRC_URL = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports/$(TI_MSPGCC_SRC_TBZ)
+TI_MSPGCC_SRC_URL = https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-LlCjWuAbzH/9.3.1.2/$(TI_MSPGCC_SRC_TBZ)
 
 ifeq ($(OTHER),0)
     TI_MSPGCC_PKG     = ti-mspgcc-binutils-sancus
@@ -56,7 +56,12 @@ ifeq ($(OTHER),0)
             LLVM_VER     = 4.0.1
             LLVM_PKG_REL = 2
         else
+        ifeq ($(OS_VERS),22.04)
+            LLVM_VER     = 4.0.1
+            LLVM_PKG_REL = 2
+        else
             $(error Unsupported OS version: $(OS_VERS))
+        endif
         endif
         endif
         endif
@@ -101,6 +106,11 @@ ifeq ($(OTHER),0)
     endif
 endif
 
+deb-build-deps:
+	$(info .. Installing system-wide Ubuntu/Debian build dependencies)
+	$(SUDO) apt-get install -yqq \
+            build-essential bison flex texinfo checkinstall
+
 # ---------------------------------------------------------------------------
 $(TI_MSPGCC_SRC_TBZ):
 	$(WGET) $(TI_MSPGCC_SRC_URL)
@@ -117,7 +127,7 @@ ti-mspgcc-build: $(TI_MSPGCC_SRC_DIR)
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
 	  $(MAKE) -j 2
 
-ti-mspgcc-deb: ti-mspgcc-build
+ti-mspgcc-deb: deb-build-deps ti-mspgcc-build
 	$(SUDO) mkdir -p $(SANCUS_INSTALL_PREFIX)/msp430-elf/lib
 	$(SUDO) mkdir -p $(SANCUS_INSTALL_PREFIX)/share/man
 	cd $(TI_MSPGCC_SRC_DIR)/binutils && \
@@ -172,7 +182,7 @@ endif
 	cd llvm/build && cmake $(LLVM_BUILD_FLAGS) ..
 	cd llvm/build && $(MAKE) -j 2
 
-llvm-deb: llvm-build
+llvm-deb: deb-build-deps llvm-build
 	$(info .. Building .deb of patched LLVM/Clang to $(SANCUS_INSTALL_PREFIX))
 	cd llvm/build/ && \
 	  echo $(LLVM_PKG_DES) >description-pak && \

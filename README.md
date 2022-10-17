@@ -113,7 +113,7 @@ instructions.
 
 ### Requirements and Dependencies
 
-Note: The build script was developed to work on a fresh Ubuntu 18.04/20.04
+Note: The build script was developed to work on a fresh Ubuntu 18.04/20.04/22.04
 LTS installation, but it should be fairly straightforward to port to other
 GNU/Linux distribution.
 
