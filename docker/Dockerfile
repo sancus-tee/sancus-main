@@ -1,5 +1,5 @@
-# Clean Ubuntu 18.04 container
-FROM ubuntu:18.04
+# Clean Ubuntu 20.04 container
+FROM ubuntu:20.04
 RUN apt-get update -yqq
 RUN apt-get -yqq install build-essential git lsb-release sloccount sudo vim
 
