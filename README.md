@@ -162,6 +162,8 @@ $ sudo make install      # to override default security level (64 bits), use \
 
 ### XSTOOLS Installation
 
+Only needed when programming a physical FPGA board:
+
 ```bash
 $ sudo pip2 install PyPubSub==3.3.0
 $ sudo pip2 install xstools
