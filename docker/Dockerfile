@@ -8,16 +8,20 @@ RUN echo "Europe/Brussels" > /etc/timezone
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yqq tzdata
 
 # Config parameters
-ARG SANCUS_SECURITY=64
-ARG SANCUS_KEY=deadbeefcafebabe
-ARG SANCUS_BRANCH=master
-ARG ATOMICITY_MONITOR=0
+ARG BUILD_SECURITY=64
+ARG BUILD_KEY=deadbeefcafebabe
+ARG BUILD_BRANCH=master
+ARG BUILD_ATOMICITY=0
+# Set ENV vars based on these arguments
+ENV SANCUS_SECURITY=$BUILD_SECURITY
+ENV SANCUS_KEY=$BUILD_KEY
+ENV SANCUS_BRANCH=$BUILD_BRANCH
+ENV ATOMICITY_MONITOR=$BUILD_ATOMICITY
 WORKDIR sancus
 
 # Build and install latest Sancus toolchain
-RUN git clone --branch $SANCUS_BRANCH https://github.com/sancus-tee/sancus-main.git .
-RUN make install clean \
-	SANCUS_SECURITY=$SANCUS_SECURITY SANCUS_KEY=$SANCUS_KEY ATOMICITY_MONITOR=$ATOMICITY_MONITOR
+RUN git clone --branch $BUILD_BRANCH https://github.com/sancus-tee/sancus-main.git .
+RUN make install clean
 
 # Display a welcome message for interactive sessions
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd' \

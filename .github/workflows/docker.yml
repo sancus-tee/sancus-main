@@ -42,7 +42,7 @@ jobs:
           core: ${{ matrix.core }}
 
       - name: Build Sancus Security
-        run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg SANCUS_BRANCH=master --build-arg SANCUS_SECURITY=${{ matrix.security }} --build-arg SANCUS_KEY=${{ matrix.key }} --build-arg ATOMICITY_MONITOR=${{ matrix.core == 'aion' }} .
+        run: cd docker && docker build -t ${{ steps.docker-name.outputs.image-name }} --build-arg BUILD_BRANCH=master --build-arg BUILD_SECURITY=${{ matrix.security }} --build-arg BUILD_KEY=${{ matrix.key }} --build-arg BUILD_ATOMICITY=${{ matrix.core == 'aion' }} .
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
