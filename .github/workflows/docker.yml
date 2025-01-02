@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+  # Run on manual trigger
+  workflow_dispatch:
   # Run on pull requests (automatically uses PR in docker name)
   pull_request:
   # trigger a cron job every monday at 6am
